@@ -1,0 +1,167 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{7}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Characteristics of a Probability Distribution}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Measures of Central Tendency}
+
+	A measure of central tendency gives us the idea about the central value of the distribution around which values of r.v. X are clustered. Some of the measures of central tendency are given below.
+
+	\begin{enumerate}[label=\bt{\theenumi.}]
+		\ditem[Mean / Average]
+			\begin{align*}
+				\mu	\eq	\E{X}	\eq	\begin{cases}
+					\sum_{x \in S_X} x f_X(x)			&\mt{if $X$ is discrete} \\[0.5em]
+					\int_{-\infty}^\infty x f_X(x) dx	&\mt{if $X$ is a.c.}
+				\end{cases}
+			\end{align*}
+		\ditem[Median] Median $m$ of the distribution is a value such that the r.v. $X$ is equally likely to be either smaller or larger than $m$. One may define median as
+			\begin{align*}
+				m	\eq	\inf\set{x \in \bR \pipe F_X(x) \ge \frac{1}{2}}
+			\end{align*}
+
+			For continuous (in particular a.c.) r.v.
+			\begin{align*}
+				F_X(m)	\eq	\prob{X \le m}	\eq \frac{1}{2}
+			\end{align*}
+
+			Also, it can be shown that for any r.v. $X$
+			\begin{align*}
+				\E{\abs{X - m}}	\qle	\E{\abs{X - c}}
+			\end{align*}
+		\ditem[Mode] The mode of distribution of $X$ is the value that is most likely to occur. One may define mode $m_0$ of distribution of $X$ as
+			\begin{align*}
+				m_0	\eq	\argmax_{x \in \bR} f_X(x)
+			\end{align*}
+
+			\begin{remark}
+				For unimodal symmetric distributions, mean = median = mode.
+			\end{remark}
+		\ditem[Geometric Mean] If $X > 0$ almost surely (a.s.), then the G.M. $G$ of $X$ is defined by
+			\begin{align*}
+				\ln{G}	\eq	\E{\ln{X}}
+			\end{align*}
+		\ditem[Harmonic Mean] The H.M. $H$ of $X$ is defined by
+			\begin{align*}
+				\frac{1}{H}	\eq	\E{\frac{1}{X}}
+			\end{align*}
+
+			\begin{remark}
+				Using the Jensen Inequality, we can say $\mu > G > H$
+			\end{remark}
+	\end{enumerate}
+
+\end{ssection}
+
+\begin{ssection}{Measures of Dispersion / Variation}
+
+	Measures of central tendency give us the idea about the location of central part of the distribution. Other measures are often needed to describe probability distribution. A measure of dispersion (or variation) gives us an idea of the scatter (or cluster or dispersion) of the values of random variable $X$ about a measure of central tendency. Various measures of dispersion are as follows.
+
+	\begin{enumerate}[label=\bt{\theenumi.}]
+		\ditem[Mean Deviation] For some $A \in \bR$, such that $A$ is a suitable measure of central tendency (generally $\mu$), the mean deviation (MD) of $X$ about $A$ is defined by
+			\begin{align*}
+				\tfunc{MD}{A}	\eq	\E{\abs{X - A}}
+			\end{align*}
+		\ditem[Standard Deviation and Variance] The standard deviation (s.d.) of $X$ is defined by
+			\begin{align*}
+				\sigma	\eq	\sqrt{\var{X}}	\eq	\sqrt{\E{\para{X - \mu}^2}}
+			\end{align*}
+
+			where $\mu = \E{X}$. Note that the s.d. is in the same units as the r.v. $X$ and it measures the average distance of values of $X$ from the mean $\mu$. \br
+
+			For any $A \in \bR$
+			\begin{align*}
+				\E{(X - A)^2}	&\eq	\E{(X - \mu + \mu - A)} \\
+								&\eq	\E{(X - \mu)^2} + (\mu - A)^2 + 2 \, \para{\mu - A} \cdot \E{X - \mu} \\
+								&\qge	\E{(X - \mu)^2}	= \var{X}
+			\end{align*}
+		\ditem[Quartile Deviation] For a fixed $p \in \para{0, 1}$, the quantity
+			\begin{align*}
+				\xi_p	\eq	\inf\set{x \in \bR \pipe F_X(x) \ge p}
+			\end{align*}
+
+			is called the quantile of order $p$. We define
+
+			\begin{align*}
+				Q_1	\eq	\xi_{\frac{1}{4}}	&\eq	\mt{first quantile} \\
+				Q_2	\eq	\xi_{\frac{1}{2}}	&\eq	\mt{second quantile (or median)} \\
+				Q_2	\eq	\xi_{\frac{3}{4}}	&\eq	\mt{third quantile}
+			\end{align*}
+
+			Clearly $Q_1$, $Q_2$ and $Q_3$ divide the probability mass of distribution into four equal parts each containing 25\% weight. Then, the quantity
+			\begin{align*}
+				Q	\eq	\frac{Q_3 - Q_1}{2}
+			\end{align*}
+
+			is called the quartile deviation (or semi interquartile range) and it gives us the idea about the scatter of the probability mass of the distribution
+			\ditem[Coefficient of Variation] The variance term is not independent of units and is therefore not appropriate for comparing variability of two r.v.s having different measurement units.  In such situations one may use the coefficient of variation, defined as follows.
+			\begin{align*}
+				C_X	\eq	\frac{\sqrt{\var{X}}}{\E{X}}	\eq	\frac{\sigma}{\mu}
+			\end{align*}
+		\end{enumerate}
+
+\end{ssection}
+
+\begin{ssection}{Measures of Skewness}
+
+	For unimodal distributions, a measure of skewness gives us the idea about skewness from symmetry. If the probability distribution is
+
+	\begin{enumerate}[label=(\roman*)]
+		\item positively skewed, then the p.m.f / p.d.f has more probability mass to the right of mode with longer right tail
+		\item negatively skewed, then the p.m.f / p.d.f has more probability mass to the left of mode with longer left tail
+	\end{enumerate}
+
+	Various measures of skewness are given below.
+
+	\begin{enumerate}[label=\bt{\theenumi.}]
+			\ditem[Coefficient of Skewness] The quantity
+			\begin{align*}
+				\beta_1	\eq	\frac{\mu_3}{\mu_2^\frac{3}{2}}
+			\end{align*}
+
+			where $\mu_r$ is the r\tth moment. For symmetric distributions, $\beta_1 = 0$
+			\ditem[Yule Coefficient of Skewness] For symmetric distributions $(X - \mu = \mu - X)$, it can be shown that
+			\begin{align*}
+				Q_3 - m			&\eq	m - Q_1 \\
+				Q_3 - 2m + Q_1	&\eq	0
+			\end{align*}
+
+			Thus the quantity
+			\begin{align*}
+				\beta_2	\eq	\frac{Q_3 - 2m + Q_1}{Q_3 - Q_1}
+			\end{align*}
+
+			is also taken as a measure of skewness.
+	\end{enumerate}
+
+\end{ssection}
+
+\begin{ssection}{Measure of Kurtosis}
+
+	The kurtosis of an unimodal distribution gives us the idea about flatness or peakedness of the distribution around mode. The quantity
+	\begin{align*}
+		\gamma_1	\eq	\frac{\mu_4}{\mu_2^2}
+	\end{align*}
+
+	is called the kurtosis of probability distribution of $X$. \br
+
+	For a standard unimodal symmetric distribution (called the normal distribution, discussed later) the kurtosis is 3. Hence $\gamma_2 = \gamma_1 - 3$ is known as the excess Kurotosis of distribution of $X$. For distributions where \br
+
+	\begin{enumerate}[label=(\roman*)]
+		\item $\gamma_2 = 0$, the distribution is called a Mesokurtic Distribtion
+		\item $\gamma_2 > 0$, the distribution is called a Leptokkurtic Distribtion, and the distribution has sharper peak and longer flatter tails
+		\item $\gamma_2 < 0$, the distribution is called a Platykurtic Distribtion, and the distribution has flatter peak and shorter thinner tails
+	\end{enumerate}
+
+\end{ssection}
+
+\end{document}

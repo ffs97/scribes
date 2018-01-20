@@ -1,0 +1,145 @@
+\usepackage{common}
+
+% Set Course Title and Assignment Code
+\newcommand{\institute}{Indian Institute of Technology, Kanpur}
+\newcommand{\setinstitute}[1]{\renewcommand{\institute}{#1}}
+
+\newcommand{\seriestitle}{Some petty course title}
+\newcommand{\setseriestitle}[1]{\renewcommand{\seriestitle}{#1}}
+
+\newcommand{\scribecode}{1}
+\newcommand{\setscribecode}[1]{
+	\renewcommand{\scribecode}{#1}
+	\setcounter{seriescode}{\scribecode}
+}
+
+\newcommand{\authname}{Gurpreet Singh}
+\newcommand{\setauthname}[1]{\renewcommand{\authname}{#1}}
+
+\newcommand{\instrname}{Prob some ML teacher}
+\newcommand{\setinstrname}[1]{\renewcommand{\instrname}{#1}}
+
+\newcommand{\headate}{\today}
+\newcommand{\setheaddate}[1]{\renewcommand{\headate}{#1}}
+
+\newcommand{\scribetitle}{}
+\newcommand{\settitle}[1]{\renewcommand{\scribetitle}{#1}}
+
+\newcounter{thisyear}
+\newcounter{nextyear}
+
+\addtocounter{thisyear}{\year}
+\addtocounter{thisyear}{-2000}
+
+\addtocounter{nextyear}{\thethisyear}
+\addtocounter{nextyear}{1}
+
+\newcommand{\makeheader}{%
+	\parbox{0.75\textwidth}{%
+		{\sffamily\bfseries \institute}
+
+		{\sffamily\bfseries \seriestitle, \thethisyear--\thenextyear}
+
+        \rule{0mm}{2pt}%
+
+        {\em Instructors:\/} \instrname
+
+        {\em Authors:\/} \authname
+
+        {\em Date:\/} \headate
+
+	}
+    \hfill
+    \begin{tabular}{c@{}}
+        {\sffamily\bfseries\Large SCRIBE}\\
+        \rule{0mm}{15mm}\scalebox{5}{\sffamily \scribecode}
+    \end{tabular}
+
+	\vspace{4mm}
+
+    \hrule height1pt
+
+	\vspace{3mm}
+
+    \begin{center}
+        \scalebox{1.6}{\texttt \scribetitle}
+    \end{center}
+	
+	\vspace{1mm}
+
+    \hrule height1pt
+
+	\vspace{6mm}
+}
+
+
+\newenvironment{ssection}[1]
+    {%
+		\section{#1}
+		\vspace{1mm}
+		\begin{addmargin}{1.5em}
+	}
+	{%
+		\end{addmargin}
+	}
+
+
+\newenvironment{ssubsection}[1]
+	{%
+		\vspace{1mm}
+		\subsection{#1}
+		\vspace{1mm}
+		\begin{addmargin}{1.5em}
+	}
+	{%
+		\end{addmargin}
+	}
+
+
+\newenvironment{sssubsection}[1]
+	{%
+		\subsubsection{#1}
+		\begin{addmargin}{1.5em}
+	}
+	{%
+		\end{addmargin}
+	}
+
+
+\newenvironment{spart}[1]
+	{%
+		\subsection{Part #1}
+		\begin{addmargin}{1.5em}
+	}
+	{%
+		\end{addmargin}
+	}
+
+
+\newenvironment{scase}[2]
+	{%
+        \bt{\st{Case #1 }} \textit{#2}
+		\sbr\
+		\begin{addmargin}{1em}
+		\begin{siderule}
+	}
+	{%
+		\end{siderule}
+		\end{addmargin}
+		\sbr\
+	}
+
+\newenvironment{sproof}[1]
+	{%
+        \bt{\st{Claim }} {\em #1\/}
+
+        \bt{\st{Proof}}
+		\sbr\
+		\begin{addmargin}{1em}
+		\begin{siderule}
+	}
+	{%
+		\end{siderule}
+		\end{addmargin}
+		\sbr\
+	}

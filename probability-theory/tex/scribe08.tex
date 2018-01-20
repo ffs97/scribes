@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{7}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Joint Distribution of Random Variables and Independence}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Random Vector}
+
+	Given a probability space $\para{\Omega, \cF, \bP}$, we may be interested in two or more numerical characteristics of the sample space simultaneously.
+
+	\begin{example}
+		$\cE$: Casting two dice simultaneously
+		\begin{align*}
+			\Omega	\set{(i, j) \pipe i, j \in \set{1, 2 \dots 6}}
+		\end{align*}
+
+		Then, we can define two random variables $X_1 : \Omega \ra \bR$ and $X_2 : \Omega \ra \bR$ such that
+
+		\begin{align*}
+			X_1(\qpara{i, j})	&\eq	\;i + j \\
+			X_2(\qpara{i, j})	&\eq	\abs{i - j}
+		\end{align*}
+
+		Since we may be interested in studying $X_1$ and $X_2$ simultaneously, we study the function $\uX : \Omega \ra \bR^2$, where $\uX = \brac{X_1, X_2}'$, and $\uX(\qpara{i, j}) =  \brac{X_1(\qpara{i, j}), X_2(\qpara{i, j})}'$ where $(i, j) \in \Omega$. Here, $\uX$ is a random vector.
+	\end{example}
+
+	\begin{definition}[Random Vector]
+		A function
+		\begin{align*}
+			\uX	\eq	\brac{X_1, X_2 \dots X_p}' : \Omega \ra \bR^p
+		\end{align*}
+
+		is called a p-dimensional random vector ($\bR^p$ denotes the p-dimensional Euclidean Space)
+	\end{definition}
+
+\end{ssection}
+
+\begin{ssection}{Probability Distribution for a Random Vector}
+
+	We can also define a probability measure of the random vector $\uX$ for the sample space $\Omega$ and the event space $\cF$ as $\bP_\uX : \cF \ra \brac{0, 1}$ such that
+	\begin{align*}
+		\prob[\uX]{A}	&\eq	\prob{\funcinv{\uX}{A}} \\
+						&\eq	\prob{\set{w \in \Omega \pipe \uX(w) \in A}}
+	\end{align*}
+
+	It can be proved that this indeed is a probability measure, and hence $\para{\Omega, \cF, \bP_\uX}$ is a probability space. \br
+
+	We can also define the Joint Cumulative Distribution Function (Joint CDF) of $\uX$.
+
+	\begin{definition}
+		The joint distribution function (d.f.) of a random vector $\uX$ is the function $F_X : \bR_p \ra \bR$ defined by
+		\begin{align*}
+			F_\uX(\vx)	\eq	\prob[\uX]{(-\bm{\infty}, \vx\,]}
+		\end{align*}
+
+		where $(\va, \vb\,] = \set{\brac{x_1, x_2 \dots x_p}' \pipe \qforall n \in \brac{p}, a_n < x_n \le b_n}$
+	\end{definition}
+
+	\begin{definition}[Marginal Distributive Function]
+		The Joint CDF of any supset of the r.v.s $\set{X_1, X_2 \dots X_p}$ is called a marginal CDF of $F_\uX$. Suppose if $\uX = \brac{X_1, X_2 \dots X_p}'$ is a random vector with the joint CDF $F_\uX$, then the marginal CDF
+
+		\begin{align*}
+			F_{X_1, X_2 \dots X_{p-1}}\para{x_1, x_2 \dots x_{p-1}}	\eq	\lim_{t \ra \infty} F_{\uX}\para{x_1, x_2 \dots x_{p-1}, t}
+		\end{align*}
+	\end{definition}
+
+	\begin{exercise}
+		Prove the derived term for the marginal CDF
+	\end{exercise}
+
+	The above result suggests that to get a marginal CDF, we need to take (in limit) the arguments of unwanted variables in the joint CDF to $\infty$.
+
+	\begin{result}
+		Let $\uX = \brac{X_1, X_2 \dots X_p}'$ be a p-dimensional random vector with joint CDF $F_X$. Then, for any p-dimensional ``rectangle'' $(\va, \vb\,]$
+		\begin{align*}
+			\prob{\uX \in (\va, \vb\,]}	&\eq	\prob{\forall n \in \brac{p}, a_n < X_n \le b_n} \\
+			&\eq	\sum_{k = 0}^p \para{-1}^n \sum_{\vz \in \Delta_{k, p} \para{(\va, \vb\,]}} F_\uX (\vz)
+		\end{align*}
+
+		where for $k \in \set{0, 1 \dots p}$
+		\begin{align*}
+			\Delta_{k, p} = \set{\vz = \brac{z_1, z_2 \dots z_p} \pipe k \qmt{of} z_ns \qmt{are} a_ns \qmt{and rest are} b_ns}
+		\end{align*}
+	\end{result}
+
+	\begin{exercise}
+		Prove the above result using induction.
+	\end{exercise}
+
+	\begin{ssubsection}{Properties of a Joint CDF}
+
+		Just like CDF for a random variable, the joint CDF of a random vector must satisfy the following properties
+
+		\begin{enumerate}[label=(\roman*)]
+			\item
+				\begin{align*}
+					\underset{n \in \brac{p}}{\lim_{x_n \ra \infty}} F_\uX\para{x_1, x_2 \dots x_p}	\eq	1
+				\end{align*}
+			\item
+				\begin{align*}
+					\underset{n \in \brac{p}}{\lim_{x_n \ra -\infty}} F_\uX\para{x_1, x_2 \dots x_p}	\eq	0
+				\end{align*}
+			\item $F_\uX$ is right continuous in each dimension, keeping other dimensions fixed
+			\item For each ``rectangle'' $\brac{\va, \vb} \subseteq \bR^p$
+				\begin{align*}
+					\prob{\va \le \uX \le \vb}	\qge 0
+				\end{align*}
+		\end{enumerate}
+
+	\end{ssubsection}
+
+	If a function $G : \bR \ra \brac{0, 1}$ satisfies properties mentioned aboce, then there exists a probability space $\para{\Omega, \cF, \bP}$ and a r.v. $\uX = \brac{X_1, X_2 \dots X_p}'$ on $\Omega$ such that $G$ is the joint CDF of $\uX$
+
+\end{ssection}
+
+\begin{ssection}{Independence of Random Variables}
+
+	<++>
+
+\end{ssection}<++>
+
+\end{document}

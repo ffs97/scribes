@@ -1,0 +1,134 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{4}
+\setauthname{Gurpreet Singh}
+\setinstrname{Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Transformation of Random Variables}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Discrete Random Variables}
+
+	Suppose we have a discrete random variable $X$, we need to find a random variable $Y$ such that $Y = h(X)$, where $h$ is a function $h : \bR \ra \bR$. \br
+
+	\begin{theorem}
+		Consider two random variables X and Y such that $Y = h(X)$. We can say that the set $h(S_X) = \set{h(x) \pipe x \in S_X}$ is the support for the random variable $Y$ \et{i.e.} $S_Y = h(S_X)$.
+	\end{theorem}
+
+	\begin{proof}
+		Let $y \in h(S_X)$ \et{i.e.} there is some $x^*\ast$ such that $h(x^\ast) = y$, then
+
+		\begin{align*}
+			\prob{Y = y}	&\eq	\prob{h(X) = y} \\
+							&\eq	\prob{X = \funcinv{h}{y}} \\
+							&\qgt	0
+		\end{align*}
+
+		Hence, for every $y \in h(S_X)$, the probability $\prob{Y = y}$ is non-zero.
+
+		\begin{align*}
+			\prob{Y \in h(S_X)}	&\eq	\prob{h(X) \in h(S_X)} \\
+								&\eq	\prob{X \in S_X} \eq 1
+		\end{align*}
+
+		Since for every $y \in h(S_X)$, the probability $\prob{Y = y}$ is non-zero and the probability $\prob{Y \in h(S_X)} = 1$, we can say that $h(S_X)$ is the support for the random variable $Y$.
+	\end{proof}
+
+	For $y \in S_Y = h(S_X)$,
+
+	\begin{align*}
+		\prob{Y = y}	&\eq	\prob{h(X) = y} \\
+						&\eq	\prob{X \in \funcinv{h}{y}} \\
+						&\eq	\sum_{x \in \funcinv{h}{y}} f_X(x)
+	\end{align*}
+
+	Hence, we can finally write the pmf of the random variable $Y$ where $Y = h(X)$ with support $S_Y = h(S_X) = \set{h(x) \pipe x \in S_X}$
+
+	\begin{align*}
+		f_Y(y)	\eq	\begin{cases}
+			\sum_{x \in \funcinv{h}{y}} f_X(x)	&	\mt{if} y \in S_Y \\
+			0									&	\mt{else}
+		\end{cases}
+	\end{align*}
+
+\end{ssection}
+
+\begin{ssection}{Absolutely Continuous Variable}
+
+	Consider a random variable $X$ and a random variable $Y = h(X)$. As discussed in the previous section, if $X$ is discrete, $Y$ is also discrete. However, this is not true for an absolutely continuous variable. Consider the following example.
+
+	\begin{example}
+		Let $X$ be an absolutely continuous r.v. with pdf
+
+		\begin{align*}
+			f_X(x)	\eq	\begin{cases}
+				\frac 1 2	&	\mt{if} -1 < x < 1 \\
+				0			&	\mt{else}
+			\end{cases}
+		\end{align*}
+
+		Let $Y = \floor{X}$. Then, we can write $Y$ as
+
+		\begin{align*}
+			Y = \begin{cases}
+				-1	&	\mt{if} -1 < X < 0 \\
+				0	&	\mt{if}	0 \le X < 1
+			\end{cases}
+		\end{align*}
+
+		Therefore, we can say
+
+		\begin{align*}
+			\prob{Y = -1}	&\eq	\prob{-1 < X < 0} \\
+							&\eq	\int_{-1}^0 f_x(x) dx \\
+							&\eq	\frac 1 2 \\
+			\\
+			\prob{Y = 0}	&\eq	\prob{0 \le X < 1} \\
+							&\eq	\int_{0}^1 f_x(x) dx \\
+							&\eq	\frac 1 2 \\
+		\end{align*}
+
+		Clearly, $Y$ is discrete with support $S_Y = \set{-1, 0}$, and pmf
+
+		\begin{align*}
+			f_Y(y) = \begin{cases}
+				\frac 1 2	&	\mt{if} y \in {-1, 0} \\
+				0			&	\mt{else}
+			\end{cases}
+		\end{align*}
+	\end{example}
+
+	We now give a formula to transform Absolutely Continuous Random variables (say $X$ and $Y$) such that $Y = h(X)$, for which the support is a collection of disjoint intervals $S_X = \bigcup_{n} S_{n, X}$, such that for each set $S_{n, X}$, $h_n : S_{n, x} \lra \bR$ is strictly monotone with inverse function $\funcinv{h}{y}$ with $\ders{y} \funcinv{h}{y}$ is continuous. \br
+	
+	Let $h(S_{n, X} = \set{h(x) \pipe x \in S_{n, X}}$, then the pdf for $Y$ ($f_Y$) is written as
+
+	\begin{align*}
+		f_Y(y)	\eq	\sum_{n} \func[Y]{f}{\funcinv{h_n}{y}} \abs{\ders{y} \funcinv{h_n}{y}} \is{y \in \func{h}{S_{n, X}}}
+	\end{align*}
+
+	\begin{exercise}
+		Let X be an absolutely continuous r.v. with pdf
+
+		\begin{align*}
+			f_X(x)	\eq	\begin{cases}
+				\frac{\abs{x}}{2}	&	\mt{if} -1 < x < 1 \\
+				\frac{x}{3}			&	\mt{if}	1 < x < 2 \\
+				0					&	\mt{else}
+			\end{cases}
+		\end{align*}
+
+		Let $Y = X^2$, then
+
+		\begin{enumerate}[label=(\roman*)]
+			\item find the pdf of $Y$ and hence the CDF of $Y$
+			\item find the CDF of $Y$ and hence the pdf of $Y$
+		\end{enumerate}
+	\end{exercise}
+\end{ssection}
+
+\end{document}

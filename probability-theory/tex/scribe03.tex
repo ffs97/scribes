@@ -1,0 +1,181 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{3}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Random Variables}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Introduction}
+
+	In probability and statistics, a random variable, random quantity, aleatory variable, or stochastic variable is a variable whose possible values are numerical outcomes of a random phenomenon. 
+	
+	\begin{definition}[Random Variable]
+		A random variable defined over a probability space $\para{\Omega, \cF, \bP}$ is a function $X : \Omega \lra \bR$ that satisfies the following conditions
+
+		\begin{enumerate}
+			\item For every $r \in \bR$, the set $\set{X \le r} = A_r = \set{w \in \Omega \pipe X(w) \le r}$ satisfies $A_r \in \cF$ \et{i.e.} the set $\set{X \le r}$ is a measurable event for every $r \in \bR$
+			\item The probabilities of events $X = \infty$ and $X = -\infty$ are zero
+		\end{enumerate}
+	\end{definition}
+	
+	As a function, a random variable is required to be measurable, which rules out certain pathological cases where the quantity which the random variable returns is infinitely sensitive to small changes in the outcome. \br
+
+	Random variables throw away (non-useful) information. \br
+
+	Following is an example of a random variable, using the coin toss example.
+
+	\begin{example}[Coin-Toss]
+		Consider an event of a simple (fair) coin toss. We have only two outcomes, Heads (H) or Tails (T). Therefore, $\Omega = \set{H, T}$ \br
+		
+		Consider a mapping $X : \Omega \lra \set{-1, 1}$ such that 
+
+		\begin{align*}
+			X	\eq	\begin{cases}
+				+1	&	\mt{if outcome is Heads} \\
+				-1	&	\mt{if outcome is Tails}
+			\end{cases}
+		\end{align*}
+
+		Since this is measurable, we can say that this is a valid random variable.
+	\end{example}
+
+	Random Variables can be both discrete as well as continuous. We will discuss continuous random variables later.
+
+	\begin{ssubsection}{Other Examples of Common Random Variables}
+
+		These are some of the commonly used (discrete) random variables
+
+		\begin{example}[Indicator Random Variables]
+			The Indicator Random Variables for an event E over an outcome w is defined as
+
+			\begin{align*}
+				\is{E} = \begin{cases}
+					1	&	\mt{if} w \in E		\\
+					0	&	\mt{if} w \notin E
+				\end{cases}
+			\end{align*}
+		\end{example}
+
+		\begin{example}[Bernoulli Random Variables]
+			The Bernoulli Random Variable defines a Bernoulli Variable assigning binary values to events \et{e.g.} toss of a coin
+		\end{example}
+
+		\begin{example}[Rademacher Random Variables]
+			Defines a Rademacher Variable assigning values $\set{-1, 1}$ to outcomes of binary (fair) events.
+		\end{example}
+	\end{ssubsection}
+
+\end{ssection}
+
+\begin{ssection}{Cumulative Distribution Function}
+
+	Before we understand Cumulative Distribution Function, it is better to understand a few other terms first.
+
+	\begin{definition}[Support of a Random Variable]
+		The support of a random variable (say $X$) is the set of points $\set{x}$ such that the probability $\prob{x - \epsilon \le X \le x + \epsilon}$ is non-zero \et{i.e.} $S_X = \set{x \pipe \prob{X = x} \ne 0}$
+		\label{def:support}
+	\end{definition}
+
+	\note{The support cannot be an empty set}
+
+	\begin{remark}
+		For a random variable, if the support is a countable set, then the random variable is said to be discrete. Whereas, if $\forall x \in \bR, \lim_{\epsilon \ra 0} \prob{X \in \brac{x - \epsilon, x + \epsilon}} = 0$, then the random variable is said to be continuous.
+		\label{rem:disc_cont}
+	\end{remark}
+
+	\begin{definition}[Probability Mass Function]
+		For a discrete random variable (such as in Examples 3.1 to 3.4), the probability mass function (pmf) gives the probability that the random variable is exactly equal to some value, based on the mapping from the sample space.
+		\label{def:pmf}
+	\end{definition}
+
+	\begin{example}[Die]
+		For a fair die, there are six possible outcomes. Therefore, we can define $\Omega = \set{1, 2, 3, 4, 5, 6}$. We can also define a random variable $X : \Omega \lra \set{1, 2, 3, 4, 5, 6}$ such that
+
+		\begin{align*}
+			X(w)	\eq	\tfunc{value}{w}
+		\end{align*}
+
+		Since this is measurable, we can say that $X$ is a valid random variable. Since we know the probabilities of all outcomes $\para{\frac{1}{6}}$, we can write the pmf as
+
+		\begin{align*}
+			f_X(x)	\eq	\begin{cases}
+				\frac{1}{6}	&	\mt{if} x \in \set{1, 2, 3, 4, 5, 6} \\
+				0			&	\mt{else}
+			\end{cases}
+		\end{align*}
+	\end{example}
+
+	\begin{definition}[Probability Density Function]
+		For a continous random varaible (examples later), the probability density function (pdf) defines the probability density of the random variable at a value. The integral of the pdf across an interval gives the probability that the value of the variable lies within the same interval.
+		\label{def:pdf}
+	\end{definition}
+
+	Cumulative Distribution Function (CDF) defines a probability that a defined random variable $X$ takes on a value less than or equal to a real number $x \in \bR$ \et{i.e.} $F : r \lra \brac{0, 1}$
+
+	\begin{align*}
+		F_X(x)	\eq	\prob{X \le x}
+	\end{align*}
+
+	Some properties of a CDF are given below
+
+	\begin{enumerate}
+		\item $lim_{x \ra \infty} F_X(x) = 1$ and $lim_{x \ra -\infty} F_X(x) = 0$
+		\item F is not-decreasing
+		\item $\prob{X > x} = 1 - F_X(x)$
+		\item F is right continuous \et{i.e.} $F_X(x^+) = F_X(x)$
+		\item $\prob{x_1 < X \le x_2} = F_X(x_2) - F_X(x_1)$
+		\item $\prob{X = x} = F_X(x) - F_X(x^-)$
+	\end{enumerate}
+
+	\note{
+		For some continous random variables (say X), we can find a function $f_X$ such that
+
+		\begin{align*}
+			F_X(x)	\eq	\int_{-\infty}^x f_X(t) dt
+		\end{align*}
+
+			However, it is not necessary that a pdf always exists. For cases in which it exists, the random variable is said to be absolutely continuous \br
+	}
+
+	\note{The CDF $F_X$ might be absolutely continous, even if the }<++>
+
+
+	\begin{example}[Coin-Toss]
+		Same as in Example 1.1. we consider the random variable $X$, where
+
+		\begin{align*}
+			X = \begin{cases}
+				+1	&	\mt{if outcome is Heads} \\
+				-1	&	\mt{if outcome is Tails}
+			\end{cases}
+		\end{align*}
+
+		Since we are considering a fair coin, we can write the probability of getting Heads as $\frac{1}{2}$, and the same for getting tails. Hence, we can write the Probability Mass Function as follows
+
+		\begin{align*}
+			f_X(x) = \begin{cases}
+				0.5	&	\mt{if} x \in \set{0, 1} \\
+				0	&	\mt{else}
+			\end{cases}
+		\end{align*}
+
+		Hence, we can write the cumulative distribution function
+
+		\begin{align*}
+			F_X(x)	\eq	\begin{cases}
+				0	&	x < -1						\\
+				0.5	&	x \ge -1 \qmt{and} x < 1	\\
+				1	&	x \ge 1
+			\end{cases}
+		\end{align*}
+	\end{example}
+
+\end{ssection}
+\end{document}

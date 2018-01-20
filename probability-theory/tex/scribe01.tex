@@ -1,0 +1,121 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{1}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Introduction to Probability Theory}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Introduction}
+
+	The term probability is related to the degree of certainty about a particular event of interest. We use the Kolmogorov Definition of Probability. In order to completely define Probability, we need to have knowledge of a few other terms.
+
+	\begin{definition}[Sample Space]
+		The set of all possible outcomes on occurence of an event is known as the Sample Space. It is denoted by $\Omega$
+		\label{def:sample_space}
+	\end{definition}
+
+	\begin{definition}[Event Space]
+		The collection of all events, or subset of possible outcomes $\para{\Omega}$ is known as the event space. An event space is also known as a $\sigma$-field or a $\sigma$-algebra (denoted by $\cF$) if it follows the following conditions
+
+		\begin{enumerate}
+			\item (Surety of an event) $\Omega \in \cF$
+			\item (Closure under complementation) For any event $A$, $A \in \cF \iff \compl{A} \in \cF$
+			\item (Closure under union) For any events $A_1, A_2$, $A_1, A_2 \in \cF \implies A_1 \cup A_2 \in \cF$
+		\end{enumerate}
+		\label{def:event_space}
+	\end{definition}
+
+	\note{Closure under intersection is implied as $A_0 \cap A_2 = \compl{\compl{A_1} \cup \compl{A_2}}$}
+
+\end{ssection}
+
+\begin{ssection}{Probability Function}
+
+	We can now formally define Probaility or Probability Measure
+
+	\begin{definition}[Probability Measure]
+		Probability Measure defines a function on a $\sigma$-field --- $\bP : \cF \lra \brac{0, 1}$ which satisfies the following conditions
+
+		\begin{enumerate}
+			\item $\prob{\Omega} = 1$
+			\item If $\set{A_n}$ is a set of pairwise disjoint events $\in \cF$, then 
+				\begin{align*}
+					\prob{\bigcup_{n} A_n} = \sum_n \prob{A_n}
+				\end{align*}
+		\end{enumerate}
+		\label{def:prob_measure}
+	\end{definition}
+
+	\begin{result}[Inclusion-Exclusion Principle]
+		For events $\set{E_n}_{n \in \brac{N}}$, we can say
+
+		\begin{align*}
+			\prob{\bigcup_{n \in \brac{N}} E_n}	&\eq	p_1 - p_2 \dots + (-1)^{n - 1} p_n \\
+			\\
+			\mt{where} p_r						&\eq	\sum_{1 \le i_1 < \dots < i_r \le n} \prob{E_{i_1} \cap E_{i_2} \dots \cap E_{i_r}}
+		\end{align*}
+	\end{result}
+
+	\begin{result}
+		For events $\set{E_n}_{n \in \brac{N}}$,
+
+		\begin{enumerate}[label=(\roman*)]
+			\item 
+				\begin{align*}
+					\prob{\bigcup_{n \in \brac{N}} E_n}	\qle	\sum_{n \in \brac{N}} \prob{E_n}			&&\mt{(Boole's Inequality)}
+				\end{align*}
+			\item 
+				\begin{align*}
+					\prob{\bigcap_{n \in \brac{N}} E_n}	\qge	\sum_{n \in \brac{N}} \prob{E_n} - (n - 1)	&&\mt{(Bonferroni's Inequality)}
+				\end{align*}
+		\end{enumerate}
+	\end{result}
+	
+	\begin{definition}[Probability Space]
+		The triplet $\para{\Omega, \cF, \bP}$ of a set of outcomes, a valid $\sigma$-field and a valid probability measure constitutes a probability space.
+		\label{def:prob_space}
+	\end{definition}
+
+	\begin{definition}
+		Let $\set{E_n}_{n \ge 1}$ be a sequence of events. Then the sequence is said to be
+
+		\begin{enumerate}[label=(\roman*)]
+			\item ($E_n \uparrow$) \et{increasing} if $E_n \subset E_{n + 1}$, $n = 1, 2 \dots$. In this case, $\lim_{n \ra \infty} E_n = \bigcup_{n \ge 1} E_n$
+			\item ($E_n \downarrow$) \et{decreasing} if $E_{n + 1} \subset E_n$, $n = 1, 2 \dots$. In this case, $\lim_{n \ra \infty} E_n = \bigcap_{n \ge 1} E_n$
+		\end{enumerate}
+
+		The sequence is said to be a \et{monotone} if either $E_n \uparrow$ or $E_n \downarrow$
+		\label{def:cont_prob_func}
+	\end{definition}
+
+	\begin{result}
+		Let $\set{E_n}_{n \ge 1}$ be a monotone sequence of events, then
+
+		\begin{align*}
+			\prob{\lim_{n \ra \infty} E_n}	\eq	\lim_{n \ra \infty} \prob{E_n}
+		\end{align*}
+	\end{result}
+
+	\begin{exercise}
+		Prove Result 1.5.1
+	\end{exercise}
+
+	\begin{definition}
+		For a collection of events $\set{E_n}_{n \in \brac{N}}$,
+		\begin{enumerate}[label=(\roman*)]
+			\item the events are said to be mututally (or pairwise) exclusive if $E_i \cap E_j = \phi \,\qforall i \ne j$
+			\item the collection is said to be exhaustive if $\prob{\bigcup_{n \in \brac{N}} E_n} = 1$
+		\end{enumerate}
+		\label{def:props_of_collection_of_events}
+	\end{definition}
+
+\end{ssection}
+
+\end{document}

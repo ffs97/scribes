@@ -1,0 +1,157 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{5}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Expectation of a Random Variable}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Expectation}
+
+	\begin{definition}[Expectation]
+		The expected value (or mean) of a random variable is a weighted average of the possible values that the variable can take, each value being weighted according to the probability of that event occurring. Expectation is denoted by the symbol $\bE$. Consider a random variable $X$, then
+
+		\begin{enumerate}[label=(\roman*)]
+			\item if $X$ is dicrete, with support $S_X$ and p.m.f. $f_X$
+				\begin{align*}
+					\E{X}	\eq	\sum_{x \in S_X} x \cdot f_X(x)
+				\end{align*}
+			\item if $X$ is absolutely continous with p.d.f. $f_X$, the expectation exists and equals
+				\begin{align*}
+					\E{X}	\eq	\int_{- \infty}^\infty x \cdot f_X(x) \,dx
+				\end{align*}
+
+				provided $\int_{- \infty}^\infty \abs{x} \cdot f_X(x) \,dx$ \br
+		\end{enumerate}
+	\end{definition}
+
+	\begin{result}
+		We can also write a common representation of expectation for both discrete and absolutely continuous random variables
+
+		\begin{align*}
+			\E{X}	\eq	\int_0^\infty \prob{X > t} dt - \int_{- \infty}^0 \prob{X < t} dt
+		\end{align*} \br
+	\end{result}
+
+	\begin{result}[LOTUS -- Law of the Unconcious Statician]
+		If X is a random variable with p.m.f. / p.d.f. $f_X$ and support $S_X$, and Y is another r.v. such that for some $g : \br \lra \bR$, $Y = g(X)$, then we can write the expectation of $Y$ as follows
+
+		\begin{align*}
+			\E{Y} = \E{g(X)}	\eq	\begin{cases}
+				\sum_{x \in S_X} g(x) f_X(x)			&\mt{if X is discrete} \\
+				\\
+				\int_{- \infty}^\infty g(x) f_X(x) dx	&\mt{if X is absolutely continuous}
+			\end{cases}
+		\end{align*} \br
+	\end{result}
+
+	\begin{proof} (For discrete case)
+		Let $f_Y$ be the p.m.f. of $Y$ and let $S_Y = g(S_X)$ be the support of $Y$. Then,
+
+		\begin{align*}
+			\E{Y}			&\eq	\sum_{y \in S_Y} f_Y(y) \\
+							&\eq	\sum_{y \in S_Y} y \cdot \prob{g(X) = y} \\
+							&\eq	\sum_{y \in S_Y} \para{y \sum_{x \in \funcinv{g}{y}} f_X(x)} \\
+							&\eq	\sum_{y \in S_Y} \para{\sum_{x \in \funcinv{g}{y}} g(x) f_X(x)} \\
+			\implies \E{Y}	&\eq	\sum_{x \in S_X} g(x) f_X(x) \\
+		\end{align*}
+
+		Hence, the expectation is same as the form given in Result 5.1.1 for discrete case
+	\end{proof}
+
+	\exercise{Give the proof for the case where $X$ is absolutely continuous}
+
+	\begin{ssubsection}{Properties of Expectation}
+
+		Some properties of expectation are listed below
+
+		\begin{enumerate}[label=\textbf{\theenumi.} ]
+			\item If $X$ is a random variable such that $X \equiv c$, where $c \in \bR$ is some constant, then $\E{X} = c$
+			\item (Linearity in Addition) If $X$ and $Y$ are two random variables, then $\E{X + Y} = \E{X} + \E{Y}$
+			\item (Linearity in Scalar Multiplication) If $X$ is a random variable and $c \in \bR$ is some constant, then $\E{c \cdot X} = c \cdot \E{X}$
+		\end{enumerate}
+
+	\end{ssubsection}
+
+	\begin{definition}[Variance]
+		Variance is the expectation of the squared deviation of a random variable from its mean. Informally, it measures how far a set of (random) numbers are spread out from their average value. Suppose $X$ is a random variable, then we write the variance of $X$ as
+
+		\begin{align*}
+			\var{X}	\eq		\E{\para{X - \E{X}}^2}	\eq	\E{X^2} - \E{X}^2
+		\end{align*}
+	\end{definition}
+
+\end{ssection}
+
+\begin{ssection}{Moments and Moment Generating Function}
+
+	\begin{definition}[Moment]
+		The $r$\tth{} moment of a random variable (say $X$) is the expectation of $X^r$ and is represented by $\mu'_r$
+
+		\begin{align*}
+			\mu'_r	\eq	\E{X^r}
+		\end{align*}
+	\end{definition}
+
+	Similarly, we can define Central Moment and Absolute Moment
+
+	\begin{definition}
+		Consider a random variable $X$. Then the
+
+		\begin{enumerate}[label=(\roman*)]
+			\item \et{(Central Moment)} $r$\tth{} central moment of $X$ is the $r$\tth{} moment of the random variable $X - \E{X}$ and is represented by $\mu_r \lra \E{\para{X - \E{X}}^r}$
+			\item \et{(Absolute Moment)} $r$\tth{} absolute moment of $X$ is the $r$\tth{} moment of the random variable $\abs{X} \lra \E{\,\abs{X}^r\,}$
+		\end{enumerate}
+	\end{definition}
+
+	It is clear that the expectation of a random variable is its first moment and variance is its second centered moment. \br
+
+	We can not define the moment generating function which is used extensively in Probability Theory for proving tail bounds and finding moments.
+
+	\begin{definition}[Moment Generating Function]
+		The moment generating function (m.g.f.) of a random variable (say $X$) is defined by
+
+		\begin{align*}
+			M_X(t)	\eq	\E{\exp{tX}}
+		\end{align*}
+
+		where $t \in \bR$ such that $\E{\exp{tX}} < \infty$
+	\end{definition}
+
+	\begin{result}
+		If for some $h (\in \bR) > 0$, the m.g.f. $M_X(t)$ is finite $\qforall t \in (-h, h)$, then
+
+		\begin{enumerate}[label=(\roman*)]
+			\item $M_X(t)$ is differentiable (on $t$) any number of times in $(-h, h)$
+			\item for each $r \in \set{1, 2 \cdots}$, $\mu'_r$ exists and
+
+				\begin{align*}
+				\mu'_r	\eq	M_X^{(r)}(0)	\eq	\brac{\para{\ders{t}}^r M_X(t)}_{t = 0}
+				\end{align*}
+
+			\item for $t \in (-h, h)$
+
+				\begin{align*}
+					M_X(t)	\eq	\sum_{n \ge 0} \frac{t^n}{n!}\, \mu'_r
+				\end{align*}
+
+			\item for $t \in (-h, h)$
+
+				\begin{align*}
+					\E{X}	&\eq	\psi_X^{(1)}(0)	\eq	\mu'_1 \\
+					\var{X}	&\eq	\psi_X^{(2)}(0)	\eq	\mu_2
+				\end{align*}
+
+				where $\psi_X(t) = \ln{M_X(t)}$. This is the Cumulant Generating Function of $X$
+		\end{enumerate}
+	\end{result}
+
+\end{ssection}
+
+\end{document}

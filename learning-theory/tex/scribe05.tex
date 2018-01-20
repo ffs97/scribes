@@ -1,0 +1,133 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Statistical and Algorithmic Learning Theory}
+\setscribecode{5}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar}
+\setheaddate{January 17, 2018}
+\settitle{Uniform Convergence}
+
+
+\begin{document}
+
+\begin{ssection}{Pointwise and Uniform Convergence}
+
+	We continue with our analysis of the toy binary classification example. As stated earlier, we had defined the best function $f^\ast$ and $\hat{f}$ as
+	\begin{align*}
+		f^\ast	&\eq		\argmin{f \in \cF} \err[_D^l]{f} \\
+		\hat{f}	&\eq		\argmin{f \in \cF} \err[_S^l]{f} \\
+		f^\ast	&\qapprox	\hat{f}
+	\end{align*} \sbr
+
+	Since our hypothesis space is finite, we can, without loss of generality, say that $f^\ast = f_1$. Then,
+
+	\begin{enumerate}[label=(\roman*)]
+		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \et{i.e.} have high(er) emperical risk or training error.
+		\item we do not want $f_1$ to perform poorly on $S$ \et{i.e.} have low(er) emperical risk.
+		\item we try to ensure all $f_i$ give faithful and honest performance on $S$ \et{i.e.} $\qforall f \in \cF, \err[_D^l]{f} \approx \err[_S^l]{f}$
+	\end{enumerate}
+
+	We say that we need $f_1$ to give good performance, however we need to define what is ``good''. We say that $S$ is good with respect to a function $f \in \cF$ ($S \in \text{good}_f(\epsilon))$ if
+
+	\begin{align*}
+		\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
+	\end{align*} \sbr
+
+	This is known as pointwise convergence. We define it more formally below. \br
+
+	\begin{definition}
+		We say that a hypothesis class, $\cF$ has pointwise convergence for a given $\epsilon$ and a loss function $l$, if for all functions $f \in \cF$, and a sample $S$ of size $n$, the property
+		\begin{align*}
+			\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
+		\end{align*}
+
+		holds true.
+	\end{definition}
+
+	\begin{theorem}
+		If $S \iid D^n$, then $\qforall f \in \cF$,
+		\begin{align*}
+			\prob{S \in \tfunc[f]{good}{\epsilon}}	\qge	1 - 2 \texp{\frac{-n \epsilon^2}{3}}
+		\end{align*}
+		or equivalently
+		\begin{align*}
+			\prob{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}	\qle	2 \texp{\frac{-n \epsilon^2}{3}}
+		\end{align*}
+		\label{thm:point_convergence}
+	\end{theorem}
+
+	\begin{exercise}
+		Prove Theorem \ref{thm:point_convergence}
+
+		\hint{Take a Bernoulli random variable and use Chernoff's Bound}
+	\end{exercise}
+
+	Pointwise convergence is a good property for individual functions, however, we want such a property to hold for all functions collectively. Hence, we define a much stronger convergence property, called uniform convergence. \br
+
+	In order to define Uniform Convergence, we must first define a desired situation for the defined hypothesis class.
+	\begin{align*}
+		\prob{\errs[_D^l]{f} > \err[_D^l]{f^\ast}}	\qlt	\delta
+	\end{align*}
+
+	First, let us define the ``goodness'' of a sample in terms of uniform convergence. We say a sample $S$ is good \et{i.e.} $S \in \tfunc{good}{\epsilon}$ if for all functions $f \in \cF$, $S \in \tfunc[f]{good}{\epsilon}$ \br
+
+	Since we define $\hat{f} = \argmin{f \in \cF} \err[_S^l]{f}$, we can say
+	\begin{align*}
+		\errs[_S^l]{f}	\qle	\err[_S^l]{f^\ast}
+	\end{align*} \sbr
+
+	Suppose $S \in \tfunc{good}{\epsilon}$, then
+	\begin{align*}
+		\errs[_D^l]{f}	&\qle	\errs[_S^l]{f} + \epsilon \\
+						&\qle	\err[_S^l]{f^\ast} + \epsilon \\
+						&\qle	\err[_D^l]{f^\ast} + 2 \epsilon \\
+	\end{align*} \sbr
+
+	Hence, we can say that if
+	\begin{align*}
+		S \in \tfunc{good}{\epsilon}	&\qimplies	\errs[_D^l]{f} \le	\err[_D^l]{f^\ast} + \frac{\epsilon}{2} \\
+		\therefore \quad \errs[_D^l]{f} > \err[_D^l]{f^\ast} + \frac{\epsilon}{2}	&\qimplies S \notin \tfunc{good}{\epsilon}
+	\end{align*} \sbr
+
+	Here, we use an identity, the proof of which is left as an exercise.
+	\begin{align*}
+		\mt{If} \: A \implies B \: \qmt{then} \: \prob{A} \le \prob{B}
+	\end{align*} \sbr
+
+	Therefore, we can say
+	\begin{align*}
+		\prob{\errs[_D^l]{f} > \err[_D^l]{f^\ast}}	\qle	\prob{S \notin \tfunc{good}{\frac{\epsilon}{2}}}
+	\end{align*} \sbr
+
+	We can further reduce the RHS of the above inequality in terms of the size of the sample $S$, $\epsilon$ and the size of the hypothesis set, and hence state the condition for uniform convergence.
+
+	\begin{theorem} A hypothesis function, $\cF$ is said to have the uniform convergence property if for some sample $S$ of size $n$, and some $\epsilon$
+		\begin{align*}
+			\prob{\abs{\errs[_D^l]{f} - \err[_D^l]{f^\ast}} > 2 \epsilon}	\qle	\prob{S \notin \tfunc{good}{\epsilon}}	\qle	2 \texp{\frac{-n \epsilon^2}{3}} \cdot m
+		\end{align*}
+	\end{theorem}
+	\begin{proof}
+		From earlier, we know that if pointwise convergence holds, then uniform convergence also holds
+		\begin{align*}
+			\qforall f \in \cF, S \in \tfunc[f]{good}{\epsilon}		&\qimplies	S \in \tfunc{good}{\epsilon} \\
+			\therefore \quad \prob{S \in \tfunc{good}{\epsilon}}	&\qge		\prob{\qforall f \in \cF, S \in \tfunc[f]{good}{\epsilon}} \\
+			\implies \prob{S \notin \tfunc{good}{\epsilon}}			&\qle		\prob{\qexists f \in \cF, S \notin \tfunc[f]{good}{\epsilon}}
+		\end{align*}
+
+		Since on the RHS, we just have a union, using basic probability theory inequalities, we can write
+		\begin{align*}
+			\prob{S \notin \tfunc{good}{\epsilon}}	&\qle	\sum_{k = 1}^m \prob{S \notin \tfunc[f_k]{good}{\epsilon}} \\
+													&\qle	\sum_{k = 1}^m 2 \texp{\frac{-n\epsilon^2}{3}} \\
+													&\eq	2 \texp{\frac{-n\epsilon^2}{3}} \cdot m
+		\end{align*}
+
+		Hence, we can say that the theorem is valid.
+	\end{proof}
+
+	\note{Uniform convergence implies pointwise convergence, whereas the converse is not true. This is evident in the following example.}
+
+\end{ssection}
+
+\end{document}

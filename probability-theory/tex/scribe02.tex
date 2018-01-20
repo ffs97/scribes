@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{2}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Conditional Probability and Independence}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Conditional Probability}
+
+	Conditional Probability simply defines the probability of an event $A$, given that another event $B$ has already occurred. This is represented as $A \pipe B$. We can formally define condition probability as follows.
+
+	\begin{definition}
+		Let $A$ and $B$ be two events. The conditional probability of $A$ given $B$ is defined by
+
+		\begin{align*}
+			\prob{B \pipe A}	\eq	\frac{\prob{A \cap B}}{\prob{B}}
+		\end{align*}
+		\label{def:conditional_prob}
+	\end{definition}
+
+	\note{Conditional Probability $A \pipe B$ is defined only if $\prob{B} \ne 0$}
+
+	\begin{remark}
+		For a probability space $\para{\Omega, \cF, \bP}$, let $A \in \cF$ be an event such that $\prob{A} \ne 0$. Then, $\prob{\cdot \pipe A}$ is also a probability measure for the sample space $\Omega$, as well as for $A$.
+		\label{rem:conditional_prob_space}
+	\end{remark}
+
+	\begin{theorem}[Total Probability Theorem]
+		Let $\set{E_n}$ be a countable collection of mutually exclusive and exhaustive events. Then, for any other event E
+
+		\begin{align*}
+			\prob{E}	&\eq	\sum_{n} \prob{E \cap E_n} \\
+						&\eq	\sum_{n} \prob{E \pipe E_n} \prob{E_n}
+		\end{align*}
+		\label{th:total_prob}
+	\end{theorem}
+
+	\begin{proof}
+		Since the collection $\set{E_n}$ is exhaustive, we can say that
+
+		\begin{align*}
+			\prob{E}	&\eq	\prob{E \cap \para{\bigcup_n E_n}}	\\
+						&\eq	\prob{\bigcup_n \para{E \cap E_n}}	\\
+						&\eq	\sum_{n} \prob{E \cap E_n}			\\
+						&\eq	\sum_{n} \prob{E \pipe E_n} \prob{E_n}
+		\end{align*}
+	\end{proof}
+
+	\begin{theorem}[Bayes' Theorem]
+		Let $S = \set{E_n}$ be a countable collection of mutually exclusive and exhaustive events such that $\prob{E} \qforall E \in S$. Then, for any $j$ such that $E_j \in S$
+
+		\begin{align*}
+			\prob{E_j \pipe E}	\eq	\frac{\prob{E \pipe E_j} \prob{E_j}}{\sum_{n} \prob{E \pipe E_i} \prob{E_i}}
+		\end{align*}
+		\label{th:bayes}
+	\end{theorem}
+
+	\begin{exercise}
+		Give a proof of Bayes' Theorem
+	\end{exercise}
+
+\end{ssection}
+
+\begin{ssection}{Independence of Events}
+
+	\begin{definition}
+		Events $E_1, E_2 \dots E_n$ are said to be 
+
+		\begin{enumerate}[label=(\roman*)]
+			\item pairwise independent if
+
+				\begin{align*}
+					\prob{E_i \cap E_j}	\eq	\prob{E_i}\prob{E_j}
+				\end{align*}
+			\item mututally indpendent if $\forall k \in \set{2, 3 \dots n}$ and distinct $d_1, d_2 \dots d_k \in \set{1, 2 \dots, n}$
+
+				\begin{align*}
+					\prob{E_{d_1} \cap E_{d_2} \dots \cap E_{d_k}}	\eq	\prob{E_{d_1}} \cdot \prob{E_{d_2}} \dots \prob{E_{d_k}} 
+				\end{align*}
+		\end{enumerate}
+		\label{def:independence_events}
+	\end{definition}
+
+	\note{Pairwise Independence does not imply Mutual Independence}
+
+\end{ssection}
+
+\end{document}

@@ -1,0 +1,194 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probability Theory}
+\setscribecode{6}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar, Neeraj Misra}
+\setheaddate{Decemenber 1, 2017}
+\settitle{Equality and Inequalities in Distributions}
+
+\begin{document}
+\makeheader%
+
+\begin{ssection}{Equality in Distribution}
+
+	\begin{definition}
+		Two random variables $X$ and $Y$ are said to have the same distribution ($X \deq Y$) if they have the same C.D.F. \et{i.e.} $F_X(x) = F_Y(x) \qforall x \in \bR$
+	\end{definition}
+
+	\begin{result}
+		Let $X$ and $Y$ be two random variables with p.m.f / p.d.f $f_X$ and $f_Y$ respectively. Then
+
+		\begin{enumerate}[label=(\roman*)]
+			\item $f_X(x) = f_Y(x)$, $\qforall x \in \bR \iff X \deq Y$
+			\item for some $h > 0$, $M_X(t) = M_y(t)$, $\qforall t \in (-h, h) \implies X \deq Y$
+			\item $X \deq Y \implies h(X) \deq h(Y)$ for any function $h : \bR \ra \bR$
+		\end{enumerate}
+	\end{result}
+
+	\begin{definition}[Symmetric Distribution]
+		A random variable $X$ is said to have a symmetric distribution about a point $\mu \in \bR$ if $X - \mu \deq \mu - X$
+	\end{definition}
+
+	\begin{result}
+		Let $X$ be a random variable with p.m.f / p.d.f $f_X$ and CDF $F_X$. Then for some $\mu \in \bR$
+
+		\begin{enumerate}[label=(\roman*)]
+			\item If $f_X(x - \mu) = f_X(\mu - x)$, $\qforall x \in \bR$, then the distribution of X is symmetric about $\mu$
+			\item Distribution of $X$ is symmetric about $\mu$ iff $\qforall x \in \bR$, $F_X(\mu + x) + \func{F_X}{(\mu - x)^-} = 1$
+			\item If distribution of $X$ is symmetric about $\mu$ and $\E{X}$ exists, then $\E{X} = \mu$
+			\item If distribution of $X$ is symmetric about $\mu$, then $F_X(\mu^-) \le \frac{1}{2} \le F_X(\mu)$ (Equality holds if $F_X$ is continuous)
+			\item If distribution of $X$ is symmetric about $\mu$, then $\E{\para{X - \mu}^{2m - 1}} = 0$ where $m \in \set{1, 2 \dots}$ provided the moments exist
+		\end{enumerate}
+	\end{result}
+
+\end{ssection}
+
+\begin{ssection}{Inequalities}
+
+	\begin{definition}
+		A function $\phi : (a, b) \ra \bR$, where $a, b \in \bR$ is said to be
+
+		\begin{enumerate}[label=(\roman*)]
+			\ditem[convex]\;\: if $\phi(\alpha x + (1 - \alpha) y) \le \alpha \phi(x) + (1 - \alpha) \phi(y)$
+			\ditem[concave] if $\phi(\alpha x + (1 - \alpha) y) \ge \alpha \phi(x) + (1 - \alpha) \phi(y)$
+		\end{enumerate}
+	\end{definition}
+
+	We use the concept of convexity (concavity) to derive some inqualities for prabability distributions.
+
+	\begin{result}
+		If a function $\phi : (a, b) \ra \bR$ is a convex (concave) function and is differentiable on $(a, b)$, then $\phi'$ is increasing (decreasing) on $(a, b)$.
+	\end{result}
+
+	A popular inequality derived using the nature of functions is Jensen Inequality \br
+
+	\begin{result}[Jensen Inequality]
+		Let $X$ be a random variable with support $S_X \subseteq (a, b)$ and let $\phi : (a, b) \ra \infty$ be a function, where $a, b \in \bR$. Then
+
+		\begin{enumerate}
+			\item if $\phi$ is a \et{convex} function,
+				\begin{align*}
+					\E{\phi(X)}	\qge	\phi(\E{X})
+				\end{align*}
+			\item if $\phi$ is a \et{concave} function,
+				\begin{align*}
+					\E{\phi(X)}	\qle	\phi(\E{X})
+				\end{align*}
+		\end{enumerate}
+	\end{result}
+
+	\begin{ssubsection}{Concentration (Tail) Bounds}
+
+		Concentration inequalities provide bounds on how a random variable deviates from some value. \br
+
+		The base of many of the inequalities or bounds derived in probability theory is based on the following inequality.
+
+		\begin{theorem}
+			Let $g : \bR \ra [0, \infty)$ be a non-negative function such that $\E{g(X)} < \infty$. Then, for any $c > 0$,
+			\begin{align*}
+				\prob{g(X) > c}	\le	\frac{\E{g(X)}}{c}
+			\end{align*}
+		\end{theorem}
+
+		\begin{proof} (For absolutely continuous case)
+			Let $A = \set{x \in \bR \pipe g(x) > c}$. Then
+			\begin{align*}
+				\E{g(X)}	&\eq	\int_{-\infty}^\infty g(x) f_X(x) dx \\
+							&\eq	\int_A g(x) f_X(x) dx + \int_{A^c} g(x) f_X(x) dx \\
+							&\qge	\int_A g(x) f_X(x) dx \\
+							&\qge	c \int_A f_X(x) dx \\
+							&\eq	c \cdot \prob{g(X) > c}
+			\end{align*}
+
+			Hence, we can say
+
+			\begin{align*}
+				\prob{g(X) > c}	&\qle	\frac{\E{g(X)}}{c}
+			\end{align*}
+		\end{proof}
+
+		\begin{exercise}
+			Prove the above theorem for the discrete case
+		\end{exercise}
+
+		\begin{corollary}
+		Let $r, c > 0$, then if $\E{\abs{X}^r}$ exists
+			\begin{align*}
+				\prob{\abs{X} > c}	\qle	\frac{\E{\abs{X}^r}}{c^r}
+			\end{align*}
+		\end{corollary}
+
+		We can now discuss various inequalities and bounds for random variables
+
+		\begin{enumerate}[label=\bt{\theenumi.}]
+			\ditem[Markov Inequality]
+
+				Suppose that $\E{\abs{X}}$ exists, then
+					\begin{align*}
+						\prob{\abs{X} > c}	\qle	\frac{\E{\abs{X}}}{c}
+					\end{align*}
+
+			\ditem[Chebychev Inequality]
+
+				Let $X$ be a random variable with finite mean $\mu = \E{X}$ and finite variance $\sigma^2 = \var{X}$. Then for any $\epsilon > 0$
+				\begin{align*}
+					\prob{\abs{X - \mu} > \epsilon \sigma}	\qle	\frac{1}{\epsilon^2}
+				\end{align*}
+
+			\ditem[Chernoff's Bound]
+
+				Suppose we have $N$ independent and identical random variables $\set{X_n}_{n \in [N]}$ such that $\qforall n \in [N]$, $X_n \in \set{0, 1}$ and $\E{X_n} = p$. Then for every $\epsilon \in (0, 1)$
+				\begin{align*}
+					\prob{\compl{X} > (1 + \epsilon) \cdot p}						&\qle	\texp{\frac{-N \epsilon^2 p}{3}} \\
+					\prob{\compl{X} < (1 - \epsilon) \cdot p}						&\qle	\texp{\frac{-N \epsilon^2 p}{2}} \\[0.7em]
+					\implies
+					\prob{\abs{\compl{X} - \E{X}} < \epsilon \cdot \E{X}}	&\qle	2 \texp{\frac{-N \epsilon^2 \cdot \E{X}}{3}}
+				\end{align*}
+
+				\begin{proof} We aim to shift the problem to a form so that we can apply Markov's Inequality. Therefore
+                    \begingroup{}
+					\addtolength{\jot}{4pt}
+					\begin{align*}
+						\prob{\compl{X} < (1 - \epsilon) \cdot \E{X}}	&\eq	\prob{-s \cdot \compl{X} > -s \cdot (1 - \epsilon) \cdot \E{X}} \mcmnt{$s > 0$ is a scale parameter} \\
+																		&\eq	\prob{\texp{-s \cdot \compl{X}} > \texp{-s \cdot (1 - \epsilon) \cdot \E{X}}} \\
+																		&\qle	\frac{\E{\texp{-s \cdot \compl{X}}}}{\texp{-s \cdot (1 - \epsilon) \cdot \E{X}}} \mcmnt{Using Markovs' Inequality} \\
+																		&\eq	\frac{\prod_{n \in [N]} \E{\texp{- \frac{s}{n} \cdot X_n}}}{\texp{-s \cdot (1 - \epsilon) \cdot \E{X}}} \\
+																		&\eq	\brac{\frac{1 + p (\exp{-t} - 1)}{\texp{-t \cdot (1 - \epsilon) p}}}^N \mcmnt{$t = \frac{s}{N}$ and $\E{X} = p$} \\
+																		&\qle	\texp{N p (\exp{-t} - 1) + N p t \cdot (1 - \epsilon)}
+					\end{align*}
+
+					Since we need to find the closest bound, we set the differential with respect to $t$ as 0. Hence $t = - \ln{1 - \epsilon}$. Therefore
+					\begin{align*}
+						\prob{\compl{X} < (1 - \epsilon) \E{X}}	&\qle	\text{exp}\brac{-Np \para{\epsilon + \ln{1 - \epsilon} (1 - \epsilon)}} \\
+																&\eq	\text{ex}\brac{-Np \para{\frac{\epsilon^2}{2} - (\dots)}} \mcmnt{Using Taylor's Expansion for $\ln{1 + x}$} \\
+																&\qle	\texp{\frac{-N \epsilon^2 \cdot \E{X}}{2}}
+					\end{align*}
+                    \endgroup{}
+				\end{proof}
+		\end{enumerate}
+
+		\begin{exercise}
+			For the Chernoff's Bound discussed earlier,
+			\begin{enumerate}[label=(\roman*)]
+				\item prove the second inequality in \et{i.e.} $\prob{\compl{X} > (1 + \epsilon) \E{X}} \le \texp{\frac{-n \epsilon^2 \E{X}}{3}}$
+				\item find out the term for the Chernoff's Bound if $\set{X_n}$ are independent Rademacher Variables \ie $X_n \in \set{-1, 1}$
+			\end{enumerate}
+		\end{exercise}
+
+	\end{ssubsection}
+
+	We can also find a lower bound to the Chernoff's inequalities (Anti-Concentration Bound)
+
+	\begin{theorem}[Lower Bounds for Sampling Algorithms --- Canetti, Goldriech]
+		For the same set of random variables as in Chernoff's Bound, we can show that
+		\begin{align*}
+			\prob{\abs{\compl{X} - \E{X}}}	\qge	\frac{1}{8e\pi} \texp{-4 \epsilon^2 n \E{X}^2}
+		\end{align*}
+	\end{theorem}
+
+\end{ssection}
+
+\end{document}
