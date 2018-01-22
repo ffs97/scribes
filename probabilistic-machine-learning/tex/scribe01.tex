@@ -2,7 +2,7 @@
 
 \usepackage{scribe}
 
-\setseriestitle{Probabilistic Machine Learning}
+\setseriestitle{Probabilistic Machine Learning and Inference}
 \setscribecode{1}
 \setauthname{Gurpreet Singh}
 \setinstrname{Piyush Rai}
@@ -36,7 +36,7 @@ There could also be uncertainties in the estimated model parameters, or the pred
 
 		\begin{figure}[h!]
 			\centering
-			\includegraphics[width=0.1\textwidth]{includes/s01/plate-graphical-model.png}
+			\includegraphics[width=0.1\textwidth]{includes/scribe01/plate-graphical-model.png}
 			\caption{Plate-Notation Graphical Model}
 			\label{fig:plate-model}
 		\end{figure}
@@ -57,22 +57,26 @@ There could also be uncertainties in the estimated model parameters, or the pred
 
 		Specification of probabilistic models requires two key ingredients -- Likelihood and Prior \br
 
-		\defn{Likelihood Function}{This is the observation model that specifies how data is generated. This measures the data fit w.r.t. to the given parameters $\vtheta$ and is represented by the conditional property $\prob{\vX \pipe \vtheta}$} \br
+		\begin{definition}[Likelihood Function]
+			This is the observation model that specifies how data is generated. This measures the data fit w.r.t. to the given parameters $\vtheta$ and is represented by the conditional property $\prob{\vX \pipe \vtheta}$
+		\end{definition}
 
-		\defn{Prior Distribution}{Prior Distribution specifies how likely different parameter values are a priori. This also acts as a regularizer to the model and is represented by the prior probability $\prob{\vtheta}$} \br
+		\begin{definition}
+			Prior Distribution specifies how likely different parameter values are a priori. This also acts as a regularizer to the model and is represented by the prior probability $\prob{\vtheta}$
+		\end{definition}
 
 		For parameter estimation, we have two methods, point estimate or Bayesian Inference. \br
 
 		A single point estimate is represented as the simple maximization problem
 
 		\begin{align*}
-			\aprx{\vtheta}_{MLE}	\eq	\argmax{\vtheta} \prob{\vX \pipe \vtheta}
+			\widehat{\vtheta}_{MLE}	\eq	\argmax{\vtheta} \prob{\vX \pipe \vtheta}
 		\end{align*}
 
 		This is known as the Maximum Likelihood Estimate (MLE). We can also have a regularized version, by maximising the posterior of the parameter, instead of the Likelihood Function. This is known as the Maximum-a-Posteriori (MAP) Estimate. \br
 
 		\begin{align*}
-			\aprx{\vtheta}_{MAP}	&\eq	\argmax{\vtheta} \prob{\vtheta \pipe \vX} \\
+			\widehat{\vtheta}_{MLE}	&\eq	\argmax{\vtheta} \prob{\vtheta \pipe \vX} \\
 									&\eq	\argmax{\vtheta} \prob{\vX \pipe \vtheta} \prob{\vtheta}
 		\end{align*}
 		

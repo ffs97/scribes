@@ -2,7 +2,7 @@
 
 \usepackage{scribe}
 
-\setseriestitle{Probabilistic Machine Learning}
+\setseriestitle{Probabilistic Machine Learning and Inference}
 \setscribecode{2}
 \setauthname{Gurpreet Singh}
 \setinstrname{Piyush Rai}
@@ -21,14 +21,14 @@
 		MLE finds the estimate that maximizes the log-Likelihood $\para{\log{\prob{\vX \pipe \vtheta}}}$. We can write the maximization function as
 
 		\begin{align*}
-			\func{\lagr}{\vtheta}	\eq	\log{\prob{\vX \pipe \vtheta}}
+			\lagr{\vtheta}	\eq	\log{\prob{\vX \pipe \vtheta}}
 		\end{align*}
 
 		If the data points are independent, we can write this the joint probability as
 
 		\begin{align*}
 			\prob{\vX \pipe \vtheta}		&\eq	\prod_{n = 1}^N \prob{\vx^n \pipe \vtheta} \\
-			\implies \func{\lagr}{\vtheta}	&\eq	\sum_{n = 1}^N \log{\prob{\vx^n \pipe \vtheta}}
+			\implies \lagr{\vtheta}	&\eq	\sum_{n = 1}^N \log{\prob{\vx^n \pipe \vtheta}}
 		\end{align*}
 
 		\begin{figure}[h!]
@@ -37,7 +37,7 @@
 			\caption{Visual Look at MLE Estimate}
 		\end{figure}
 
-		\note{MLE is consistent, i.e. as N $\lra \infty$ the value of $\aprx{\vtheta}_{MLE}$ converges to the real $\vtheta$}
+		\note{MLE is consistent, i.e. as N $\lra \infty$ the value of $\widehat{\vtheta}_{MLE}$ converges to the real $\vtheta$}
 
 	\end{ssubsection}
 
@@ -46,7 +46,7 @@
 		MAP finds the estimate that maximizes the log-posterior-probability $\para{\log{\prob{\vtheta \pipe \vX}}}$. We can write the maximization function as
 
 		\begin{align*}
-			\func{\lagr}{\vtheta}	&\eq	\log{\prob{\vtheta \pipe \vX}} \\
+			\lagr{\vtheta}	&\eq	\log{\prob{\vtheta \pipe \vX}} \\
 									&\eq	\log{\prob{\vX \pipe \vtheta}} + \log{\prob{\vtheta}}
 		\end{align*}
 
@@ -54,7 +54,7 @@
 
 		\begin{align*}
 			\prob{\vX \pipe \vtheta}		&\eq	\prod_{n = 1}^N \prob{\vx^n \pipe \vtheta} \\
-			\implies \func{\lagr}{\vtheta}	&\eq	\sum_{n = 1}^N \para{\log{\prob{\vx^n \pipe \vtheta}}} + \log{\prob{\vtheta}}
+			\implies \lagr{\vtheta}	&\eq	\sum_{n = 1}^N \para{\log{\prob{\vx^n \pipe \vtheta}}} + \log{\prob{\vtheta}}
 		\end{align*}
 
 		\begin{figure}[h!]
@@ -82,7 +82,7 @@
 		In case of MAP, we minimize the loss function with a regularizer term
 
 		\begin{align*}
-			\func{\mt{L}}{\vtheta}	\eq	\func{\mt{NLL}}{\vtheta} \qsub \log{\prob{\vtheta}}
+			\tfunc{L}{\vtheta}	\eq	\tfunc{NLL}{\vtheta} - \log{\prob{\vtheta}}
 		\end{align*}
 
 		\note{NLL is the `loss function' and $-\log{\prob{\vtheta}}$ is the regularizer term} \br
@@ -107,10 +107,10 @@
 			\log{\vX \pipe \theta}	\eq	\sum_{n = 1}^N x^n \log{\theta} + \para{1 - x^n} \log{1 - \theta}
 		\end{align*}
 
-		Maximizing the log-likelihood, we get the MLE estimate $\para{\aprx{\theta}_{MLE}}$
+		Maximizing the log-likelihood, we get the MLE estimate $\para{\wtheta_{MLE}}$
 
 		\begin{align*}
-			\aprx{\theta}_{MLE}	\eq	\frac{\sum_{n = 1}^N x^n}{N}
+			\wtheta_{MLE}	\eq	\frac{\sum_{n = 1}^N x^n}{N}
 		\end{align*}
 
 		In this case, MLE is simply the fraction of heads. The problem with MLE is that it does not express our prior beliefs about $\theta$. This can be problematic if the number of samples is very less (the number of heads might be zero) \br
@@ -132,7 +132,7 @@
 		Therefore, we have the MAP estimate as follows
 
 		\begin{align*}
-			\aprx{\theta}_{MAP}	\eq	\frac{\sum_{n = 1}^N x^n + \alpha - 1}{N + \alpha + \beta - 2}
+			\wtheta_{MAP}	\eq	\frac{\sum_{n = 1}^N x^n + \alpha - 1}{N + \alpha + \beta - 2}
 		\end{align*}
 
 		Intuitively, the hyperparameters represent the pseudo-observations \et{i.e.} $\alpha - 1$ and $\beta - 1$ are the number of heads and tails, respectively, before actually seeing any data.
@@ -223,7 +223,7 @@
 			\item Multinomial (likelihood) + Dirichlet (prior) $\lra$ Dirichlet posterior
 			\item Poisson (likelihood) + Gamma (prior) $\lra$ Gamma posterior
 			\item Gaussian (likelihood) + Gaussian (prior) $\lra$ Gaussian posterior
-		\end{enumerate}
+		\end{itemize}
 
 	\end{ssubsection}
 

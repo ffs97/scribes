@@ -45,12 +45,12 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 
 		\ditem[l-risk] ($\err[_D^l]{f}$) --- This is defined as the expected loss/error that is obtained for a function $f$ given a loss function $l : (f(\cX), \cY) \ra \bR$.
 			\begin{align*}
-				\err[_D^l]{f}	\qdefines	\E[(x, y) \sim D]{l(f(x), y)}
+				\err[_D^l]{f}	\qdeq	\E[(x, y) \sim D]{l(f(x), y)}
 			\end{align*}
 
 		\ditem[emperical risk] ($\err[_D^l]{f}$) --- This is defined as the weighted loss/error on the training sample that is obtained for a function $f$ given a loss function $l : (f(\cX), \cY) \ra \bR$
 			\begin{align*}
-				\err[_S^l]{f}	\qdefines	\frac{1}{n} \sum_{i = 1}^n l(f(x^i), y^i)
+				\err[_S^l]{f}	\qdeq	\frac{1}{n} \sum_{i = 1}^n l(f(x^i), y^i)
 			\end{align*}
 
 	\end{enumerate} \sbr
@@ -199,12 +199,12 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 		\begin{theorem}
 			For some finite hypothesis class, $\cH$, let $\delta, \epsilon \in \para{0, 1}$ and let $m$ be an integer that satisfies
 			\begin{align*}
-				m	\qge	\frac{\log{\abs{\cH}} / \delta}{\epsilon}
+				m	\qge	\frac{\log{\abs{\cH} / \delta}}{\epsilon}
 			\end{align*}
 			Then for any prediction function $f$, and for any distribution $\cD$, for which the realizability assumption holds, with probability of at least $1 - \delta$ over the choice of an i.i.d. sample $S$ of size $m$, we have that for every ERM hypothesis class will be probably (with confidence $1 - \delta$) approximately (up to an error $\epsilon$) correct.
 		\end{theorem}
 
-	\end{sssubsection}
+	\end{ssubsection}
 
 \end{ssection}
 

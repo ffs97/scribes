@@ -1,0 +1,22 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{bm}
+\usetikzlibrary{bayesnet}
+
+\begin{document}
+
+	\tikz{
+		\node[latent]				(beta) 		{$\beta$};
+		\node[obs, right=of beta]	(y) 		{$y^i$};
+		\node[obs, right=of y]		(x) 		{$\bm{x}^i$};
+		\node[latent, above=of y]	(w) 		{$w$};
+		\node[latent, left=of w]	(lambda)	{$\lambda$};
+
+		\plate[inner sep=0.25cm, xshift=-0.12cm, yshift=0.12cm]	{p1}	{(y) (x)}	{n};
+
+		\edge {beta, x, w}	{y};
+		\edge {lambda}		{w};
+	}
+
+\end{document}

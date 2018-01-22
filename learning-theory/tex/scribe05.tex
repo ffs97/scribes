@@ -7,78 +7,146 @@
 \setauthname{Gurpreet Singh}
 \setinstrname{Purushottam Kar}
 \setheaddate{January 17, 2018}
-\settitle{Uniform Convergence}
-
+\settitle{Uniform Convergence and PAC Learnability}
 
 \begin{document}
+\makeheader%
 
-\begin{ssection}{Pointwise and Uniform Convergence}
+In order to understand pointwise and uniform convergence, let us consider the following problem. \br
 
-	We continue with our analysis of the toy binary classification example. As stated earlier, we had defined the best function $f^\ast$ and $\hat{f}$ as
-	\begin{align*}
-		f^\ast	&\eq		\argmin{f \in \cF} \err[_D^l]{f} \\
-		\hat{f}	&\eq		\argmin{f \in \cF} \err[_S^l]{f} \\
-		f^\ast	&\qapprox	\hat{f}
-	\end{align*} \sbr
+\begin{ssection}[1]{Problem Setting}
+
+	Consider a finite hypothesis class $\cH = \set{f^1, f^2 \dots f^m}$ and a distribution $\cD$. We need to find the best prediction function $f^\ast$ which minimizes the l-risk.
 
 	Since our hypothesis space is finite, we can, without loss of generality, say that $f^\ast = f_1$. Then,
 
 	\begin{enumerate}[label=(\roman*)]
-		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \et{i.e.} have high(er) emperical risk or training error.
-		\item we do not want $f_1$ to perform poorly on $S$ \et{i.e.} have low(er) emperical risk.
-		\item we try to ensure all $f_i$ give faithful and honest performance on $S$ \et{i.e.} $\qforall f \in \cF, \err[_D^l]{f} \approx \err[_S^l]{f}$
+		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \ie have high(er) emperical risk or training error.
+		\item we do not want $f_1$ to perform poorly on $S$ \ie have low(er) emperical risk.
+		\item we try to ensure all $f_i$ give faithful and honest performance on $S$ \ie $\qforall f \in \cH, \err[_D^l]{f} \approx \err[_S^l]{f}$
 	\end{enumerate}
 
-	We say that we need $f_1$ to give good performance, however we need to define what is ``good''. We say that $S$ is good with respect to a function $f \in \cF$ ($S \in \text{good}_f(\epsilon))$ if
+	Essentially, we wish to find a training sample $S$ that for all functions in the hypothesis class, $S$ should perform well.
+
+	We say that we need $f_1$ to give good performance, however we need to define what is ``good''. We say that $S$ is good with respect to a function $f \in \cH$ ($S \in \text{good}_f(\epsilon))$ if
 
 	\begin{align*}
 		\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
 	\end{align*} \sbr
 
-	This is known as pointwise convergence. We define it more formally below. \br
+	We define this more formally in the Section \hyperlink{sec:2}{2}
 
-	\begin{definition}
-		We say that a hypothesis class, $\cF$ has pointwise convergence for a given $\epsilon$ and a loss function $l$, if for all functions $f \in \cF$, and a sample $S$ of size $n$, the property
-		\begin{align*}
-			\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
-		\end{align*}
+	\note{By good, we do not mean that the function should give a low error, instead, the function should give an error almost the same as it would give for the true distribution}
 
-		holds true.
+\end{ssection}
+
+\begin{ssection}[2]{Pointwise Convergence}
+
+	Before we look at the definition of pointwise convergence, we need to formally define when a training sample is considered to be good or representative of the true data distribution.
+
+	\begin{definition}[$\epsilon$-representative wrt\footnote{\ut{wrt} is an abbreviation for ``with respect to''} a function]
+		A training sample $S$ is said to be $\epsilon$-representative of a distribution $\cD$ with respect to a function $f$ and a loss function $l$ if
+		\begin{equation}
+			\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\le	\epsilon
+		\end{equation}
 	\end{definition}
 
+	We can now give the formal definition of pointwise convergence.
+
+	\begin{definition}[Pointwise Convergence]
+		A hypothesis / function class $\cH = \set{f^1, f^2 \dots}$ is said to be in pointwise convergence if $\qforall f \in \cF$
+		\begin{equation}
+			\qforall \epsilon > 0, \quad \lim_{n \ra \infty}\; \prob[S \sim \cD^n]{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}	\eq	0
+		\end{equation}
+	\end{definition}
+
+	If the hypothesis class is finite, then using Theorem 3.1, we can formulate the following observation.
+
 	\begin{theorem}
-		If $S \iid D^n$, then $\qforall f \in \cF$,
-		\begin{align*}
-			\prob{S \in \tfunc[f]{good}{\epsilon}}	\qge	1 - 2 \texp{\frac{-n \epsilon^2}{3}}
-		\end{align*}
-		or equivalently
-		\begin{align*}
-			\prob{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}	\qle	2 \texp{\frac{-n \epsilon^2}{3}}
-		\end{align*}
-		\label{thm:point_convergence}
+		For a finite hypothesis class $\cH$ and a loss function $l$, we say that $\cH$ is in pointwise convergence if for some $\epsilon > 0$, $\delta \in (0, 1)$ and a training sample $S$ of size $n$, where $n > n_\cH(\epsilon, \delta)$ if $\qforall f \in \cH$
+		\begin{equation}
+			\prob[S \sim \cD^n]{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}	\qle	\delta
+		\end{equation}
+		\label{thm:pointwise}
 	\end{theorem}
 
 	\begin{exercise}
-		Prove Theorem \ref{thm:point_convergence}
+		Prove Theorem \ref{thm:pointwise} using Theorem 3.1 from the third scribe.
+	\end{exercise}
+
+	\begin{corollary}
+		If the output space $\cY = \set{0, 1}$ \ie the problem is a binary classification one, then for any sample $S \iid D^n$, $\qforall f \in \cH$
+		\begin{align*}
+			\prob{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}	\qle	2 \texp{\frac{-n \epsilon^2}{3}}
+		\end{align*}
+		\label{cor:point_convergence}
+	\end{corollary}
+
+	\begin{corollary}
+		If the output space $\cY = \set{0, 1}$ \ie the problem is a binary classification one, then we can say that the minimum sampling complexity
+		\begin{align*}
+			n_\cH	\qle	\ceil{\frac{3 \log{2 / \delta}}{\epsilon^2}}
+		\end{align*}
+	\end{corollary}
+
+	\begin{exercise}
+		Prove Corollary \ref{cor:point_convergence}
 
 		\hint{Take a Bernoulli random variable and use Chernoff's Bound}
 	\end{exercise}
 
-	Pointwise convergence is a good property for individual functions, however, we want such a property to hold for all functions collectively. Hence, we define a much stronger convergence property, called uniform convergence. \br
-
-	In order to define Uniform Convergence, we must first define a desired situation for the defined hypothesis class.
+	Pointwise convergence seems to be the solution to the problem discussed in Section \hyperlink{sec:1}{1}, however if we take a closer look, it is not a solution to our problem. Pointwise convergence assures that each function individually does not break the $\epsilon$ bound, however, if we find the bound that no function $f$ breaks the $\epsilon$ bound, we will find the probability to be greater than $1 - \abs{\cH} \cdot \delta$ \, \ie
 	\begin{align*}
-		\prob{\errs[_D^l]{f} > \err[_D^l]{f^\ast}}	\qlt	\delta
+		\prob{\qforall f \in \cH, \; S \qmt{is} \epsilon\mt{-representative}}	\qge	1 - \abs{\cH} \cdot \delta
 	\end{align*}
 
-	First, let us define the ``goodness'' of a sample in terms of uniform convergence. We say a sample $S$ is good \et{i.e.} $S \in \tfunc{good}{\epsilon}$ if for all functions $f \in \cF$, $S \in \tfunc[f]{good}{\epsilon}$ \br
+	\begin{exercise}
+		Prove the above bound using the concepts of pointwise convergence
+	\end{exercise}
 
-	Since we define $\hat{f} = \argmin{f \in \cF} \err[_S^l]{f}$, we can say
+	This is a much weaker bound, as the size of the hypothesis space is generally large (sometimes infinite, as we will see later). Therfore, pointwise convergence is a good property for individual functions, however, we want such a property to hold for all functions collectively. Hence, we define a much stronger convergence property, called uniform convergence, discussed in the next section. \br
+
+\end{ssection}
+
+\begin{ssection}[3]{Uniform Convergence}
+
+	We have stated what we desire when we choose a training sample in Section \hyperlink{sec:1}{1}. As discussed in the previous section, we have concluded that pointwise convergence is a weak property and cannot be used to find a good bounds on the training sample. The solution to that is Uniform Convergence. In order to define Uniform Convergence, we must first understand for what training sample do we say that the sample is good or representative of the distribution.
+
+	\begin{definition}
+		Given a hypothesis space $\cH$ and a loss fucntion $l$, a training sample $S$ is called $\epsilon$-representative of any distribution $\cD$ if $\qforall f \in \cH$
+		\begin{equation}
+			\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
+		\end{equation}
+		\label{eq:epsilon-representative}
+	\end{definition}
+
+	Similar to pointwise converge in idea, we now define uniform convergence
+
+	\begin{definition}[Uniform Convergence]
+		A hypothesis / function class $\cH = \set{f^1, f^2 \dots}$ is said to be in uniform convergence if
+		\begin{equation}
+			\qforall \epsilon > 0, \quad \lim_{n \ra \infty}\; \prob[S \sim \cD^n]{\max_{f \in \cH} \set{\abs{\err[_D^l]{f} - \err[_S^l]{f}}} > \epsilon}	\eq	0
+		\end{equation}
+	\end{definition}
+
+	Again, we can formulate the definition of uniform convergence to fit in our problem of hypothesis spaces.
+
+	\begin{theorem}
+		For a finite hypothesis class $\cH$ and a loss function $l$, we say that $\cH$ is in uniform convergence if for some $\epsilon > 0$, $\delta \in (0, 1)$ and a training sample $S$ of size $n$, where $n > n_\cH(\epsilon, \delta)$ if
+		\begin{equation}
+			\prob[S \sim \cD^n]{\qforall f \in \cF, \set{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}}	\qle	\delta
+		\end{equation}
+		\label{thm:uniform}
+	\end{theorem}
+
+	We will give the bound for $n_\cH$ later in the scribe, however, note that it is still polynomial in $1 / \epsilon$ and $1 / \delta$
+
+	Since we define $\hat{f} = \argmin{f \in \cH} \err[_S^l]{f}$, we can say
 	\begin{align*}
 		\errs[_S^l]{f}	\qle	\err[_S^l]{f^\ast}
 	\end{align*} \sbr
 
-	Suppose $S \in \tfunc{good}{\epsilon}$, then
+	Suppose $S \in \epsilon$-representatives\footnote{We use $\epsilon$-reprentatives to denote the set of samples that are $\epsilon$-representative for a hypothesis class}, then
 	\begin{align*}
 		\errs[_D^l]{f}	&\qle	\errs[_S^l]{f} + \epsilon \\
 						&\qle	\err[_S^l]{f^\ast} + \epsilon \\
@@ -87,9 +155,29 @@
 
 	Hence, we can say that if
 	\begin{align*}
-		S \in \tfunc{good}{\epsilon}	&\qimplies	\errs[_D^l]{f} \le	\err[_D^l]{f^\ast} + \frac{\epsilon}{2} \\
-		\therefore \quad \errs[_D^l]{f} > \err[_D^l]{f^\ast} + \frac{\epsilon}{2}	&\qimplies S \notin \tfunc{good}{\epsilon}
+		S \in \epsilon\text{-representative}	&\qimplies	\errs[_D^l]{f} \le	\err[_D^l]{f^\ast} + \frac{\epsilon}{2}
 	\end{align*} \sbr
+
+	Note that the RHS defines the condition for PAC learnability. Hence, we can formulate the following result.
+
+	\begin{result}
+		If a hypothesis class $\cH$ is in uniform convergence for a training sample $S$ with sample complexity $n_\cH^{\text{UC}}$, then the hypothesis class $\cH$ is PAC learnable with minimum sample complexity $n_\cH \le n_\cH^{\text{UC}}$, and henceforth, the ERM$_\cH$ paradigm is a successful agnostic PAC learner for $\cH$
+		\label{res:unif-pac}
+	\end{result}
+
+	Suppose we have a training sample $S$ for which the hypothesis class is in uniform convergence, then we also have PAC learnability for that hypothesis class. Hence, the problem discussed in Section \hyperlink{sec:1}{1} is solved with the ERM paradigm, without the fear of overfitting. \br
+
+\end{ssection}
+
+\begin{ssection}[4]{Agnostic PAC learnibility for Finite Hypothesis Classes}
+
+	Similar to the method used in Scribe 3, we need to find a training sample size which allows for uniform convergence given $\epsilon > 0$ and $\delta \in (0, 1)$ in case of finite hypothesis classes. \br
+
+	Suppose, for a hypothesis class $\cH$, we have a training sample $S$ of size $n$. Then for some $\epsilon > 0$ and $\delta \in (0, 1)$,
+	\begin{align*}
+		S \in \epsilon\text{-representatives}					&\implies	\qforall f \in \cH,\; \abs{\err[_D^l]{f} - \err[_S^l]{f}} \le \epsilon \\
+		\therefore S \notin \epsilon\text{-representatives}		&\implies	\qexists f \in \cH,\; \abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon
+	\end{align*}
 
 	Here, we use an identity, the proof of which is left as an exercise.
 	\begin{align*}
@@ -98,35 +186,43 @@
 
 	Therefore, we can say
 	\begin{align*}
-		\prob{\errs[_D^l]{f} > \err[_D^l]{f^\ast}}	\qle	\prob{S \notin \tfunc{good}{\frac{\epsilon}{2}}}
+		\prob{S \notin \epsilon\text{-representatives}}	&\qle	\prob{\qexists f \in \cH,\; \abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon} \\
+														&\eq	\prob{\bigcup_{f \in \cH} \set{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}} \\
+														&\qle	\sum_{f \in \cH} \prob{\abs{\err[_D^l]{f} - \err[_S^l]{f}} > \epsilon}
 	\end{align*} \sbr
 
-	We can further reduce the RHS of the above inequality in terms of the size of the sample $S$, $\epsilon$ and the size of the hypothesis set, and hence state the condition for uniform convergence.
+	We can further reduce the RHS of the above inequality in terms of the size of the sample $S$, $\epsilon$ and the size of the hypothesis set, and hence state the condition or bound for uniform convergence. However, for this we require a concentration bound known as the \et{Hoeffding's Inequality}, which is as stated below
 
-	\begin{theorem} A hypothesis function, $\cF$ is said to have the uniform convergence property if for some sample $S$ of size $n$, and some $\epsilon$
-		\begin{align*}
-			\prob{\abs{\errs[_D^l]{f} - \err[_D^l]{f^\ast}} > 2 \epsilon}	\qle	\prob{S \notin \tfunc{good}{\epsilon}}	\qle	2 \texp{\frac{-n \epsilon^2}{3}} \cdot m
-		\end{align*}
+	\begin{theorem}[Hoeffding's Inequality]
+		Let $R$ have a sequence of $n$ i.i.d. random variables $\set{X^i}_{i \in \brac{n}}$ and assume that for all $i \in \brac{n}$, $\E{X^i} = \mu$ and $a \le X^i \le b$ a.s.\footnote{We say that an event $E$ happens almost surely (abbreviated as a.s.) if the probability of $E$ happening is 1}. Then, for any $\epsilon > 0$
+		\begin{equation}
+			\prob{\abs{\frac{1}{n} \sum_{i \in \brac{n}} X^i - \mu} > \epsilon}	\qle	2 \texp{\frac{-2\,n\,\epsilon^2}{(b - a)^2}}
+		\end{equation}
 	\end{theorem}
-	\begin{proof}
-		From earlier, we know that if pointwise convergence holds, then uniform convergence also holds
-		\begin{align*}
-			\qforall f \in \cF, S \in \tfunc[f]{good}{\epsilon}		&\qimplies	S \in \tfunc{good}{\epsilon} \\
-			\therefore \quad \prob{S \in \tfunc{good}{\epsilon}}	&\qge		\prob{\qforall f \in \cF, S \in \tfunc[f]{good}{\epsilon}} \\
-			\implies \prob{S \notin \tfunc{good}{\epsilon}}			&\qle		\prob{\qexists f \in \cF, S \notin \tfunc[f]{good}{\epsilon}}
-		\end{align*}
 
-		Since on the RHS, we just have a union, using basic probability theory inequalities, we can write
-		\begin{align*}
-			\prob{S \notin \tfunc{good}{\epsilon}}	&\qle	\sum_{k = 1}^m \prob{S \notin \tfunc[f_k]{good}{\epsilon}} \\
-													&\qle	\sum_{k = 1}^m 2 \texp{\frac{-n\epsilon^2}{3}} \\
-													&\eq	2 \texp{\frac{-n\epsilon^2}{3}} \cdot m
-		\end{align*}
+	We do not give the proof of the above theorem here, but can be found \href{https://en.wikipedia.org/wiki/Hoeffding\%27s\_inequality\#Proof}{here} \br
 
-		Hence, we can say that the theorem is valid.
-	\end{proof}
+	Assuming the range of the loss function $l$ is $\brac{0, 1}$, then using the Hoeffding's Inequality, we can complete the bound on the probability of a training sample $S$ not being $\epsilon$-representative and formulate the following result, the proof of which is left as an exercise
 
-	\note{Uniform convergence implies pointwise convergence, whereas the converse is not true. This is evident in the following example.}
+	\begin{result}
+		For a hypothesis class $\cH$ and a loss function $l$, the range of which is $\brac{0, 1}$, the hypothesis class is in uniform convergence with minimum sample complexity
+		\begin{equation}
+			n_\cH^{\text{UC}}	\qle	\ceil{\frac{\log{2 \abs{\cH} / \delta}}{2 \epsilon^2}}
+		\end{equation}
+	\end{result}
+
+	\begin{exercise}
+		Find the bound on $n_\cH^{\text{UC}}$ if the range of the loss function is $\brac{a, b}$
+	\end{exercise}
+
+	This result suggests that every hypothesis class that is finite is in uniform convergence for a training sample with size at least that of $n_\cH^{\text{UC}}$. Using Result \ref{res:unif-pac}, we can also get the following result.
+
+	\begin{result}
+		For a hypothesis class $\cH$ and a loss function $l$, the range of which is $\brac{0, 1}$, the hypothesis class is PAC learnable with minimum sample complexity
+		\begin{equation}
+			n_\cH	\qle	n_\cH^{\text{UC}}	\qle	\ceil{\frac{2 \log{2 \abs{\cH} / \delta}}{\epsilon^2}}
+		\end{equation}
+	\end{result}
 
 \end{ssection}
 
