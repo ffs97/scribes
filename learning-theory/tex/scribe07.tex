@@ -1,0 +1,394 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Statistical and Algorithmic Learning Theory}
+\setscribecode{7}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar}
+\setauthemail{guggu@iitk.ac.in}
+\settitle{The McDiarmid Inequality}
+
+\begin{document}
+\makeheader
+
+\begin{ssection}{Recap}
+	
+	In the last scribe, we discussed concentration bounds for infinite hypothesis classes which can be represented by an $\epsilon$-cover, using Hoeffding's Inequality. However, the concentration bound derived was dependent on the dimensionality of the feature space. Thus, the concentration bound derived from Hoeffding's Inequality and $\epsilon$-cover are useless for problems with high dimensionality space such as Kernel Method.
+	
+	We, therefore need a stronger and more general bound. We therefore study the McDiarmid Inequality, which is a more general result than the Hoeffding's Inequality.
+	
+\end{ssection}
+
+\begin{ssection}{The McDiarmid Inequality}
+	
+	The McDiarmid Inequality provides a more general bound than the Hoeffding's Inequality in the sense that it is independent of the dimensionality of any data point while computing the concentration bound, and thus can be used, even for high dimensional feature spaces.
+	
+	Before we move on to understand the inequality, we must define what is c-stable function. \br
+	
+	\begin{definition}[c-stable function]
+		Let $X_1, X_2 \dots X_m \in \cX^m$ be a set of $m \ge 1$ independent random variables and a function $f : \cX^m \ra \bR$, then the function $f$ is \et{c-stable} if $\qexists c \in \bR^+$ such that
+		\begin{equation}
+			\abs{f(x_1 \dots x_i \dots x_m) - f(x_1 \dots x_i' \dots x_m)}	\le	c
+		\end{equation}
+		for all $i \in \brac{1, m}$ and any points $x_1, x_2 \dots x_m, x_i' \in \cX$.
+		\label{eq:c-stable}
+	\end{definition} \br
+	
+	We can consider a simple example for a function that is c-stable. \br
+	
+	\begin{example}
+		Suppose we have a loss function $\cX$ such that $\cX \in \brac{a, b}$ a.s. and a function $f : \cX^m \ra \bR$ such that
+		\begin{align*}
+			f(x_1, x_2 \dots x_n)	\eq	\frac{\sum_{i = 1}^m x_i}{m} 
+		\end{align*}
+		then, we can argue that
+		\begin{align*}
+			\abs{f(x_1 \dots x_i \dots x_m - f(x_1 \dots x_i' \dots x_m)} & \eq	\abs{\frac{1}{m} \brac{\sum_{j = 1}^m x_j - \underset{j \ne i}{\sum_{j = 1}^{m}} x_j - x_i'}} \\
+			                                                              & \eq	\frac{1}{m} \abs{\brac{\sum_{j = 1}^m x_j - \sum_{j = 1}^m x_j + x_i - x_i'}}                 \\
+			                                                              & \eq	\frac{1}{m} \abs{x_i - x_i'}                                                                  \\
+			                                                              & \qle	\frac{b - a}{m}                                                                              
+		\end{align*}
+		Therefore, $f$ is $\frac{b - a}{m}$ stable.
+		\label{ex:hoeffding}
+	\end{example}
+	
+	We can now state the McDiarmid Inequality, which is defined for only c-stable functions. \br
+	
+	\begin{theorem}[McDiarmid Inequality]
+		Let $X_1, X_2 \dots X_m \in \cX^m$ be a set of $m \ge 1$ independent random variables and a function $f : \cX^m \ra \bR$, such that the function $f$ is c-stable. Let $f(S)$ denote $f(X_1, X_2 \dots X_m)$, then the McDiarmid Inequality states that the for all $\epsilon > 0$,
+		\begin{equation}
+			\prob{\abs{f(S) - \E{f(S)}} > \epsilon}	\le 2 \texp{\frac{-2 \epsilon^2}{m c^2}}
+			\label{eq:mcdiarmid}
+		\end{equation}
+		\label{def:mcdiarmid}
+	\end{theorem}
+	
+	\begin{proof}
+		Let us first prove the inequality only for a samples with only a single variable, \ie $m  = 1$.
+		
+		Suppose for a feature space $\cX$, we have a random variable $X \in \cX$ and a function $f : \cX \ra \bR$ such that $f$ is c-stable. Then, for all $x \in \cX$, looking at only one side of the inequality (\ie $f(X) - \E{f(X)} > \epsilon$), we can write
+		\begin{align*}
+			\prob{f(X) - \E{f(X)} > \epsilon} & \eq	\prob{\texp{s \para{f(X) - \E{f(X)}}} > \texp{s \epsilon}}	\mcmnt{$s > 0$}                       \\
+			                                  & \qle	\frac{\E{\texp{s \para{f(X) - \E{f(X)}}}}}{\texp{s \epsilon}} \mcmnt{Using Markov's Inequality} 
+		\end{align*}
+		
+		Note that $\E{f(X)}$ is always a constant with respect to $X$. Therefore, we can say
+		\begin{align*}
+			\para{\max_{X} f(X) - \E{f(X)}} - \para{\min_{X} f(X) - \E{f(X)}} & \eq	\para{\max_{X} f(X)} - \para{\min_{X} f(X)} \\
+			                                                                  & \eq	\max_{X, X'} \para{f(X) - f(X')} \qle c     
+		\end{align*}
+		Since f is c-stable, we can say that the difference between the maximum and the minimum values of the quantity $f(X) - \E{f(X)}$ is at most equal to $c$. Also, since $\E{f(X) - \E{f(X)}} = \E{f(X)} - \E{f(X)} = 0$.
+		
+		Therefore, we can use Hoeffding's Lemma, discussed in Lecture XYZ, on the transformed random variable $f(X) - \E{f(X)}$. Hence, we get
+		\begin{align*}
+			\E{\texp{s(f(X) - \E{f(X)}}}	\qle	\texp{\frac{s^2 c^2}{8}} 
+		\end{align*}
+		
+		Putting this in the original inequality, we get
+		\begin{align*}
+			\prob{f(X) - \E{f(X)} > \epsilon}	\qle	\texp{\frac{s^2 c^2}{8} - s \epsilon} 
+		\end{align*}
+		
+		Since we want the closest bound, we minimize the RHS with respect to $s$. Note that this will be smallest for $s = 4 \epsilon / c^2$, therefore
+		\begin{align*}
+			\prob{f(X) - \E{f(X)} > \epsilon}	\qle	\texp{-\frac{2 \epsilon^2}{c^2}} 
+		\end{align*}
+		
+		We can follow the same set of steps to prove that $\prob{f(X) - \E{X} < - \epsilon} \le \texp{- 2\epsilon^2 / c^2}$. Combining these two inequalities, we get
+		\begin{align*}
+			\prob{\abs{f(X) - \E{f(X)}} > \epsilon}	\qle	2 \texp{- \frac{2 \epsilon^2}{c^2}} 
+		\end{align*}
+		This is exactly the term of the McDiarmid Inequality when $m = 1$. Therefore, we can claim that the McDiarmid Inequality holds when $m = 1$.
+	\end{proof}
+	
+	In order to extend the proof to larger training samples, we need what is known as the Martingales. We shall look at this in the next section.
+	
+\end{ssection}
+
+\begin{ssection}{Martingales}
+	
+	In probability theory, a martingale is a sequence of random variables (i.e., a stochastic process) for which, at a particular time in the realized sequence, the expectation of the next value in the sequence is equal to the present observed value even given knowledge of all prior observed values. \cite{martingale-wiki}
+	
+	We define this more formally below. \br
+	
+	\begin{definition}[Martingale]
+		A sequence of random variables $\set{X_i}_{i = 1, 2 \dots}$ is said to be a \et{martingale}, if for all $i = 1, 2 \dots$, the expectation $\E{\abs{X_i}}$ exists and the conditional expectation
+		\begin{align*}
+			\E{X_{i + 1} - X_i \pipe X_1, X_2 \dots X_i}	\eq	0 \ . 
+		\end{align*}
+		\label{def:martingale}
+	\end{definition}
+	
+	In order to better understand this, consider the following example of a martingale sequence. \br
+	
+	\begin{example}[Random Walk]
+		Suppose a drunkard started his walk from a fixed, known position (say the origin) in 1-D. At any second, he may choose one direction, \ie left or right at random, and take one step and one step only. If we define the position of the drunkard (a random variable) at any second $i$ as $Z_i$ (let $Z_1$ be the initial position), then we can say that the sequence $\set{Z_i}_{i = 1, 2 \dots}$ is a martingale sequence.
+		
+		It is easy to see why indeed this is a martingale sequence. We can write the expectation
+		\begin{align*}
+			\E{Z_{i + 1} - Z_i \pipe Z_1, Z_2 \dots Z_i} & \eq	\E{Z_{i + 1} \pipe Z_i} - Z_n                      \\
+			                                             & \eq	\frac{1}{2} (Z_i + 1) + \frac{1}{2}{Z_i - 1} - Z_i \\
+			                                             & \eq	0                                                  
+		\end{align*}
+		Since the condition for this sequence to be a martingale holds true and therefore, the random walk sequence is a martingale sequence.
+	\end{example} \br
+	
+	\begin{definition}[Martingale Difference]
+		A sequence of random variables $\set{Z_i}_{i = 1, 2 \dots}$ is said to be a \et{martingale difference} with respect to another sequence of random variables $\set{X_i}_{i = 1, 2 \dots}$ if for all $i = 1, 2 \dots$, $Z_i$ is a function $X_1, X_2 \dots X_i$, $\E{\abs{Z_i}}$ exists, and
+		\begin{align*}
+			\E{Z_{i + 1} - Z_{i + 1} \pipe X_1, X_2 \dots X_i}	\eq	0 
+		\end{align*}
+		\label{def:maringale-difference}
+	\end{definition}
+	
+	We will derive a concentration bound for a sequence that is a martingale difference with respect to another sequence. Using this, we can prove the McDiarmid Inequality. \br
+	
+	\begin{theorem}
+		Let $\set{Z_i}_{i = 1, 2 \dots}$ be a martingale difference with respect to another sequence $\set{X_i}_{i = 1, 2 \dots}$. Suppose $\qexists c \in \bR^+$ such that for all $i = 1, 2 \dots$
+		\begin{align*}
+			a	\qle	Z_{i + 1} - Z_i	\qle	b 
+		\end{align*}
+		then, for all $\epsilon > 0$,
+		\begin{equation}
+			\prob{\abs{Z_{n + 1} - Z_1} > \epsilon}	\qle	2 \texp{-\frac{2\epsilon}{n(b - a)^2}}
+			\label{eq:azuma}
+		\end{equation}
+		\label{th:azuma}
+	\end{theorem}
+	
+	\begin{proof}
+		We borrow the proof technique from the proofs of the Multiplicative Chernoff's Bound and Hoeffding's Bound.
+		\begin{align*}
+			\prob{\para{Z_n - Z_1} > \epsilon} & \eq	\prob{s \para{Z_n - Z_1} > s \epsilon}                         \\
+			                                   & \eq	\prob{\texp{s \para{Z_{n + 1} - Z_1}} > \texp{s \epsilon}}     \\
+			                                   & \qle	\frac{\E{\texp{s \para{Z_{n + 1} - Z_1}}}}{\texp{s \epsilon}} 
+		\end{align*}
+		Let us represent $\set{X_j}_{j = 1, 2 \dots i}$ as $\xX_i$.
+		
+		Since for all $i = 1, 2 \dots$, the random variable $Z_i$ is a function of $\xX_i$ (from the definition of martingales), we can therefore write the expectation term as below
+		\begin{align*}
+			\E{\texp{s \para{Z_{n + 1} - Z_1}}} & \eq	\E[\xX_{n + 1}]{\texp{s \para{\sum_{i = 1}^n Z_{i + 1} - Z_i}}}                       \\
+			                                    & \qle	\E[\xX_{n + 1}]{\prod_{i = 1}^n \texp{s \para{Z_{i + 1} - Z_i}}}                     \\
+			                                    & \eq	\E[\xX_n]{\E[X_{n + 1}]{\prod_{i = 1}^n \texp{t \para{Z_{i + 1} - Z_i}} \pipe \xX_n}} 
+		\end{align*}
+		
+		Since for all $i = 1, 2 \dots n$ we can say $Z_j$ is a function of $\xX_n$, therefore, the product terms for $i = 1 \dots n - 1$ will be constant with respect to the expectation, and hence will come out of the inner expectation.
+		\begin{align*}
+			\E{\texp{s \para{Z_{n + 1} - Z_1}}} & \qle	\E[\xX_n]{\prod_{i = 1}^{n - 1} \texp{s \para{Z_{i + 1} - Z_i}} \E[X_{n + 1}]{\texp{s \para{Z_{n + 1} - Z_n}} \pipe \xX_n}} 
+		\end{align*}
+		
+		We can apply Hoeffding's Lemma on $\para{Z_{n + 1} - Z_n}$ as given $\xX_n$, we know $\para{Z_n - Z_1} \in \brac{a, b}$ and $\E{Z_{n+1} - Z_n \pipe \xX_n} = 0$. Therefore
+		\begin{align*}
+			\E{\texp{s \para{Z_{n + 1} - Z_n}} \pipe \xX_n}	\qle	\texp{\frac{s^2 (b - a)^2}{8}} 
+		\end{align*}
+		
+		Since, the expectation will always be non-negative, the inequality will hold, and hence, we can write
+		\begin{align*}
+			\E{\texp{s \para{Z_{n + 1} - Z_n}} \pipe \xX_n} & \qle	\E[\xX_n]{\prod_{i = 1}^{n - 1} \texp{s \para{Z_{i + 1} - Z_i}} \pipe \xX_n} \texp{\frac{s^2 (b - a)^2}{8}} 
+		\end{align*}
+		Iterating the same steps, we can therefore reduce the inequality to as written below.
+		\begin{align*}
+			\E{\texp{s \para{Z_n - Z_1}}}	\qle	\texp{\frac{n s^2 (b - a)^2}{8}} 
+		\end{align*}
+		Formulating the detailed steps for above is left as an exercise. Putting this in the original equation, we get
+		\begin{align*}
+			\prob{\para{Z_n - Z_1} > \epsilon}	\qle	\texp{\frac{n s^2 (b - a)^2}{8} - s \epsilon} 
+		\end{align*}
+		
+		Minimizing the upper bound with respect to $s$, we get $s = 4 \epsilon / (b - a)^2$, therefore
+		\begin{align*}
+			\prob{\para{Z_n - Z_1} > \epsilon}	\qle	\texp{- \frac{2 \epsilon^2}{n (b - a)^2}} 
+		\end{align*}
+		We can follow the steps to prove that
+		\begin{align*}
+			\prob{Z_{n + 1} - Z_1 < \epsilon}	\qle	\texp{- \frac{2 \epsilon^2}{n (b - a)^2}} 
+		\end{align*}
+		Therefore, combining the two inequalities, we get
+		\begin{align*}
+			\prob{\abs{Z_{n + 1} - Z_1} > \epsilon}	\qle	2 \texp{- \frac{2 \epsilon^2}{n (b - a)^2}} 
+		\end{align*}
+	\end{proof}
+	
+	\note{The above theorem is a direct corollary of Azuma's Inequality (see \cite{foundations-ml})}
+	
+	Using this theorem, we can finally prove the McDiarmid Inequality, as we will see in the next section
+	
+\end{ssection}
+
+\begin{ssection}{Proof and Corollaries of the McDiarmid Inequality}
+	
+	We can now prove the McDiarmid Inequality using the concept of martingales. \br
+	
+	\note{We follow the same notation from the previous section, \ie $\xX_n$ represents $X_1, X_2 \dots X_n$}
+	
+	Following from the statement of the McDiarmid Inequality, let $X_1, X_2 \dots X_n \in \cX^n$ be a set of independent random variables and $f : \cX^n \ra \bR$ be a c-stable function. Assume another sequence of random variables, $\xZ_{n + 1}$ such that for all $i = 0, 1 \dots n - 1$
+	\begin{align*}
+		Z_i	\eq	\E[X_{i + 1} \dots X_n]{f(X_1, X_2 \dots X_n) \pipe \xX_i} 
+	\end{align*}
+	and $Z_n = f(X_1, X_2 \dots X_n)$
+	
+	We therefore want to show
+	\begin{align*}
+		\E{\abs{Z_n - Z_0} > \epsilon}	\qle	2 \texp{- \frac{2 \epsilon^2}{n c^2}} 
+	\end{align*}
+	
+	Before showing this, let us consider the following claim. \br
+	
+	\begin{claim}
+		The sequence $\xZ_n$ is a martingale difference with respect to $\xX_n$.
+	\end{claim}
+	\begin{proof}
+		In order to prove that $\xZ_n$ is a martingale difference with respect to $\xX_n$, we need to show
+		\begin{align*}
+			\E{Z_{i + 1} - Z_i \pipe \xX_i} = 0 
+		\end{align*}
+		
+		For simplicity, we represent $X_{i + 1} \dots X_n$ as $\xX_{-i}$
+		
+		\begin{align*}
+			\E{Z_{i + 1} - Z_i \pipe \xX_i} & \eq	\E{Z_{i + 1} \pipe \xX_i}	- \E{Z_i \pipe \xX_i}                                        \\
+			                                & \eq	\E[\xX_{-i}]{Z_{i + 1} \pipe \xX_i} - \E[\xX_{-i}]{Z_i \pipe \xX_i}                    \\
+			                                & \eq	\E[\xX_{-i}]{\E[\xX_{-(i + 1)}]{f(X_1 \dots X_n) \pipe \xX_{i + 1}} \pipe \xX_i} - Z_i 
+		\end{align*}
+		
+		From the properties of conditional expectation,
+		\begin{align*}
+			\E{A \pipe B}	\eq \E{\E{A \pipe B, C} \pipe B} 
+		\end{align*}
+		Therefore,
+		\begin{align*}
+			\E[\xX_{-i}]{\E[\xX_{-(i + 1)}]{f(X_1 \dots X_n) \pipe \xX_{i + 1}} \pipe \xX_i} & \eq	\E[\xX_{-i}]{f(X_1 \dots X_n) \pipe \xX_i} \\
+			                                                                                 & \eq	Z_i                                        \\
+			\implies	\E{Z_{i + 1} - Z_i \pipe \xX_i}                                         & \eq	0                                          
+		\end{align*}
+		
+		Hence, our claim is true.
+	\end{proof}
+	
+	\begin{remark}
+		We can also include $X_0$ and $Z_0$ in the sequence where $X_0$ can be any random variable. Since $Z_1$ is independent of $X_0$, $\E{Z_1 - Z_0 \pipe X_0} = \E{Z_1 - Z_0} = 0$. Hence, the sequence $Z_0, Z_1 \dots Z_n$ is a martingale difference with respect to the sequence $X_0, X_1 \dots X_n$.
+	\end{remark} \br
+	
+	\begin{exercise}
+		Prove that since $f$ is c-stable, for all $i = 0, 1 \dots n - 1$, $\abs{Z_{i + 1} - Z_i} \le c$.
+		\label{ex:c-stable}
+	\end{exercise}
+	
+	Since we have shown that the sequence $Z_0 \dots Z_n$ is a martingale difference with respect to the sequence $X_0 \dots X_n$, we can use Theorem \ref{th:azuma}. Also from Exercise \ref{ex:c-stable}, we know that $\abs{Z_{i + 1} - Z_i} \le c$, we can apply Theorem \ref{th:azuma}. From that, we get
+	\begin{align*}
+		\prob{\abs{Z_n - Z_0} > \epsilon}	\qle	2 \texp{- \frac{\epsilon^2}{2 n c^2}} 
+	\end{align*}
+	
+	However, note that this is not the same as the expression given for the McDiarmid Inequality. We can find a tighter bound by realizing the difference between the maximum and the minimum values of $Z_{i + 1} - Z_{i}$ given $\xX_{i}$.
+	
+	Let $W_i = \sup \set{Z_{i + 1} - Z_i}$ given $\xX_i$ and $U_i = \inf \set{Z_{i + 1} - Z_i}$
+	
+	Since we are given $\xX_i$, therefore $Z_i$ is a constant (as $Z_i$ is a function of $\xX_i$). Also, since we are computing expectation over $\xX_{- (i + 1)}$ in $Z_{i + 1}$, the only variable in question is $X_{i + 1}$. Therefore, we can rewrite $W_i$ and $U_i$ as
+	\begin{align*}
+		W_i & \eq	\sup_{x} \set{\E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x}} - Z_i \\
+		U_i & \eq	\inf_{x} \set{\E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x}} - Z_i 
+	\end{align*}
+	Hence, the difference can be written as
+	\begin{align*}
+		\implies W_i - U_i & \eq	\sup_{x} \set{\E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x}} - \inf_{x} \set{\E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x}} \\
+		                   & \eq	\sup_{x, x'} \set{\E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x} - \E[\xX_{-(i + 1)}]{f(S) \pipe X_1, X_2 \dots X_i, x'}}           
+	\end{align*}
+	
+	This, similar to Exercise \ref{ex:c-stable} can be proved to be smaller than $c$. Also,
+	\begin{align*}
+		U_i	\qle	Z_{i + 1} - Z_i	\qle	W_i 
+	\end{align*}
+	Since $U_i$ is a constant given $\xX_i$ as it does not depend on $\xX_{-i}$, and $W_i - U_i \le c$, we have
+	\begin{align*}
+		U_i	\qle	Z_{i + 1} - Z_i	\qle	U_i + c 
+	\end{align*}
+	Applying Theorem \ref{th:azuma}, we get the actual term for the McDiarmid Inequality, \ie
+	\begin{align*}
+		\prob{\abs{Z_n - Z_0}}	\qle	\texp{- \frac{2 n \epsilon^2}{c^2}}                                                  \\
+		\implies \prob{\abs{f(X_1, X_2 \dots X_n) - \E{f(X_1, X_2 \dots X_n)}}}	\qle	\texp{- \frac{2 n \epsilon^2}{c^2}} 
+	\end{align*}
+	
+	This completes the proof of the McDiarmid Inequality. Below, we see some interesting applications / corollaries of the McDiarmid Inequality. \br
+	
+	\begin{remark}
+		We can use the McDiarmid Inequality for functions which are c-stable with high probability, but not almost surely.
+	\end{remark} \br
+	
+	\setcounter{theorem}{1}
+	\begin{corollary}[Hoeffding's Inequality]
+		Consider the function discussed in Example \ref{ex:hoeffding}., \ie $f(X_1 \dots X_n) = \frac{1}{n} \sum_{i = 1}^n X_i$. Since, $f$ is $\frac{b-a}{n}$--stable, we can apply the the McDiarmid Inequality to $f$, using which we directly get the Hoeffding's Inequality. The details of the intermediate steps are left as an exercise.
+		\end {corollary} \br
+		
+		\begin{corollary}[Uniform Convergence]
+			If for some loss function $l : \cX \times \cY$, we have $\qforall (x, y) \in \cX \times \cY$ and $\qforall f$, $l(f(x), y) \in \brac{a, b}$, then the uniform condition holds as follows
+			\begin{align*}
+				\prob{\sup_{f \in \cF} \set{\err[_S^l]{f} - \err[_D^l]{f}} > \epsilon}	\qle	\texp{- \frac{2n \epsilon}{(b - a)^2}} 
+			\end{align*}
+		\end{corollary}
+		\begin{proof}
+			Suppose we have a loss function $l : \cX \times \cY \ra \bR$, such that for all $(x, y) \in \cX \times \cY$ and $\qforall f \in \cF$, we have
+			\begin{align*}
+				a \qle	l(f(x), y)	\qle b 
+			\end{align*}
+			Suppose we have a training sample $S = \set{(x_1, y_1), (x_2, y_2) \dots (x_n, y_n)}$. Let
+			\begin{align*}
+				g(S)	\eq	\sup_{f \in \cF} \set{\err[_S^l]{f} - \err[_D^l]{f}} 
+			\end{align*}
+			
+			We want to show that $g$ is c-stable, which would allow us to use the McDiarmid Inequality for this function. Note that the expectation value of $g$ is zero.
+			
+			Define $g_f(S) = \err[_S^l]{f} - \err[_D^l]{f}$ and $S_i = S \setminus \set{(x_i, y_i)} \bigcup \set{(x_i', y_i)}$ \br
+			
+			\begin{remark}
+				$g(S)$, information theoretical wise, is well defined, even though we cannot calculate the value of $g(S)$ algorithmically.
+			\end{remark}
+			
+			Since $l(f(x), y) \in \brac{a, b}$, we have for all $i \in \brac{n}$
+			\begin{align*}
+				g_f(S) - g_f(S_i) & \eq	\frac{1}{n} \para{\sum_{j = 1}^n l(f(x_j), y_j) - \para{\underset{j \ne i}{\sum_{j = 1}^n} l(f(x_j), y_j) + l(f(x_i'), y_i))}} \\
+				                  & \eq	\frac{1}{n} \para{l(f(x_i), y_i) - l(f(x_i'), y_i)}                                                                            \\
+			\end{align*}
+			Since $l(f(x), y) \in \brac{a, b}$
+			\begin{equation}
+				g_f(S) - g_f(S_i)	\qle	\frac{b - a}{n}
+				\label{eq:c-stable-uniform}
+			\end{equation}
+			
+			Therefore, we can write, for all $i \in \brac{n}$
+			\begin{align*}
+				g(S) - g(S_i) & \eq	sup_{f \in \cF} g_f(S) - sup_{f \in \cF} g_f(S_i)                                             \\
+				\intertext{Suppose $g(S)$ is maximum for $f_1$ and $g(S_i)$ is maximum for $f_2$ (without loss of generality)}
+				g(S) - g(S_i) & \eq	g_{f_1}(S) - g_{f_2}(S_i)                                                                     \\
+				              & \qle	g_{f_1}(S) - g_{f_1}(S_i) + \frac{b - a}{n} \mcmnt{Using Equation \ref{eq:c-stable-uniform}} \\
+				              & \eq	\frac{b - a}{n}                                                                               
+			\end{align*}
+			
+			Therefore, $g$ is $\frac{b-a}{n}$-stable. This suggests that we can use the McDiarmid Inequality for $g$. Hence, we get
+			\begin{align*}
+				\prob{g(S) - \E[S]{g(S)} > \epsilon}                                            & \qle	\texp{- \frac{2 n \epsilon^2}{(b - a)^2}} \\
+				\implies \prob{\sup_{f \in \cF} \set{\err[_S^l]{f} - \err[_D^l]{f}} > \epsilon} & \qle	\texp{- \frac{2 n \epsilon^2}{(b - a)^2}} 
+			\end{align*}
+			We can also prove the negative tail for this, using the same set of steps. Therefore, we get the bound for Uniform Convergence using the McDiarmid Inequality.
+		\end{proof}
+		
+		We can therefore see that the McDiarmid Inequality is really useful for finding bounds for c-stable functions, even for infinite hypothesis classes, since the bound is independent of the size of the hypothesis class.
+		
+		In the next lecture, we will revise the bound for the regression case using the McDiarmid Inequality and see that for certain hypothesis classes, it is possible to get a bound on the number of samples required for a model $\epsilon$-close to the real data distribution.
+		
+		\end{ssection}
+		
+		\begin{thebibliography}{10}
+			
+			\bibitem{martingale-wiki}
+			Wikipedia
+			\et{Martingale, Probability Theory}. \\
+			\href{https://en.wikipedia.org/wiki/Martingale_(probability_theory)}{\url{https://en.wikipedia.org/wiki/Martingale_(probability_theory)}}
+			
+			\bibitem{foundations-ml}
+			Mehryar Mohri, Afshin Rostamizadeh, and Ameet Talwalkar
+			\et{Foundations of Machine Learning, 2012}
+			
+		\end{thebibliography}
+		
+\end{document}

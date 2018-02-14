@@ -1,0 +1,139 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Probabilistic Machine Learning and Inference}
+\setscribecode{4}
+\setauthname{Gurpreet Singh}
+\setinstrname{Piyush Rai}
+\setauthemail{guggu@iitk.ac.in}
+\settitle{Bayesian Approach to Logistic Regression}
+
+\begin{document}
+\makeheader
+
+\begin{ssection}{Probabilistic Models for Classification}
+
+	Our goal is to learn $\prob{\vy \pipe X}$, which in case of classification will be a discrete distribution, precisely a Bernoulli or a Multinoulli. There are usually two approaches to learn $\prob{\vy \pipe X}$, \ie Discriminative and Generative
+
+	\begin{enumerate}[label=\bt{\theenumi.}]
+		\ditem[Discriminative Classification] Discriminative models learn the (hard or soft) boundary between classes. In this type of classification, we directly model $\prob{\vy \pipe X}$ and do not model the distribution of the inputs $X$.
+		\ditem[Generative Classification] Generative models learn the distribution of individual classes, as along with the marginal likelihood, we also learn the distribution of the inputs. In this case, we model $\prob{y \pipe x}$ indirectly, using the bayes rule, \ie $\prob{\vy \pipe X} = \frac{\prob{\vy} \prob{X \pipe \vy}}{\prob{X}}$
+
+			Hence, this approach first requires learning the class marginal ($\prob{\vy}$) and the class-conditional ($\prob{X \pipe \vy}$). This is usually harder than discriminative classification but it also has other advantanges, such as it is possible to learn the input data itself, and can be used even in case of incomplete data.
+	\end{enumerate}
+
+	Both, generative and discriminative approaches can be learned using Bayesian as well as non-Bayesian Inference techniques. In this scribe, we only discuss Logisitic Regression.
+
+\end{ssection}
+
+\begin{ssection}{Logistic Regression: Point Estimate}
+
+	Logisitic Regression is an example of discriminative binary classification, \ie the output space $\cY = \set{0, 1}$.
+	Logistic Regression models the $\cX$ to $\cY$ relationship using the \et{sigmoid} ($\sigma$) function, defined as below
+	\begin{equation}
+		\prob{y = 1 \pipe \vx, \vw}	\eq	\sigmoid{\tr{\vw} \vx}	\eq	\frac{1}{1 + \texp{- \tr{\vw} \vx}}
+	\end{equation}
+	where $\vw \in \bR^D$ is the weight vector. We can also write $\prob{y = 0 \pipe \vx, \vw} = 1 - \sigmoid{\tr{\vw} \vx}$.
+
+	We can also use other functions to map the input space $\cX \subseteq \bR^D$ to a valid output space for a probability measure, \ie $\brac{0, 1}$.
+	For example, the probit function (Probit Regression) maps the input space using the CDF of the normal distribution
+	\begin{align*}
+		\prob{y = 1 \pipe \vx}	\eq	\vphi(\tr{\vw} \vx)
+	\end{align*}
+	where $\vphi = \tfunc{CDF}{\ND{0, 1}}$
+
+	We model the likelihood distribution as a Bernoulli.
+	\begin{equation}
+		\prob{y \pipe \vx, \vw}	\eq	\mu^{\is{y = 1}} (1 - \mu)^{\is{y = 0}}
+		\label{eq:likelihood}<++>
+	\end{equation}
+	where $\mu = \sigmoid{\tr{\vw} \vx}$
+
+	Given $N$ observations (i.i.d.), we can do point estimation for $\vw$ by maximizing the likelihood (or minimize negative log-likelihood).
+	\begin{equation}
+		\vw_{\text{MLE}}	&\eq	\argmin{\vw} - \sum_{n = 1}^N \log{\prob{y_n \pipe \vx_n, \vw}}
+	\end{equation}
+
+	We cannot minize usign derivatives, as the solution is not in closed form. Therefore we need to use function optimization techniques such as gradient descent or second order methods such as Newton's method. Since this is a convex loss function, we will attain a global minima using function optimization.
+
+	It is also possible to regularize $\vw$ (MAP estimation) to prevent overfitting.
+	\begin{equation}
+		\vw_{MAP}	&\eq	\argmax{\vw} \sum_{n = 1}^{N} \log{\prob{y_n \pipe \vx_n, \vw}} + \log{\prob{\vw}}
+	\end{equation}
+
+\end{ssection}
+
+\begin{ssection}{Bayesian Logistic Regression}
+
+	Since MLE / MAP give only a point estimate, they do not give a full inference on the data and the outputs. Therefore, we would like to infer the full posterioir over $\vw$
+
+	Similar to bayesian linear regression case, we assume a Gaussian prior on $\vw$
+	\begin{equation}
+		\prob{\vw}	\eq \ND{0, \lambda^{-1} \vI_D}
+		\label{eq:prior}
+	\end{equation}
+
+	Using bayes rule, we have
+	\begin{align*}
+		\prob{\vw \pipe X, \vy}	\qprop	\prob{\vy \pipe X, \vw} \, \prob{\vw}
+	\end{align*}
+
+	From Equations \ref{eq:likelihood} and \ref{eq:prior}, we have
+	\begin{align*}
+		\prob{\vw \pipe X, \vy}	\qprop	\prod_{n = 1}^N \mu^{\is{y_n = 1}} (1 - \mu)^{\is{y_n = 0}} \texp{- \frac{\lambda}{2} \tr{\vw} \vw}
+	\end{align*}
+	where $\mu = \sigmoid{\tr{\vw} \vx}$.
+
+	However, the integral of such an expression is intractable. Hence, we can't get a closed form for $\prob{\vw \pipe X, \vy}$. One solution to this is to approximate the posterior. There are several ways to do it, such as MCMC and variational inference (more on this later), and \et{Laplace Approximation}.
+
+	We will discuss Laplace Approximation as a solution to our problem.
+
+	\begin{ssubsection}{Laplace Approximation}
+
+		Laplace Approximation is the approximation of an intractable distribution using a gaussian with the mode of the distribution as the mean, and the hessian matrix of the negative log probability of the distribution as the precision matrix.
+
+		More formally, we approximate the posterior $\prob{\vtheta \pipe \cD} = \frac{\prob{\cD \pipe \vtheta} \prob{\vtheta}}{\prob{\cD}}$ by th following gaussian
+		\begin{align*}
+			\prob{\vtheta \pipe \cD}	\qapprox	\ND{\vtheta_{\text{MAP}}, H^{-1}}
+		\end{align*}
+		where
+		\begin{align*}
+			\vtheta_{\text{MAP}}	\eq	\argmax{\vtheta} \prob{\vtheta \pipe \cD}	\eq	\argmax{\vtheta} \prob{\cD \pipe \vtheta} \prob{\vtheta}
+		\end{align*}
+		and
+		\begin{align*}
+		H	\eq	- \bigtriangledown^2 \brac{\log{\prob{\vtheta \pipe \cD}}}_{\vtheta = \vtheta_{\text{MAP}}}	\eq	- \bigtriangledown^2 \brac{\log{\prob{\vtheta, \cD}}}_{\vtheta = \vtheta_{\text{MAP}}}
+		\end{align*}
+
+		The derivation / verification of the Laplace Approximation can be seen using the approximate taylor's expansion. We write the posterior as
+		\begin{align*}
+			\prob{\vtheta \pipe \cD}	&\eq	\frac{\prob{\cD, \vtheta}}{\prob{\cD}} \\
+										&\eq	\frac{\prob{\cD, \vtheta}}{\int \prob{\cD, \vtheta} \text{d}\vtheta} \\
+										&\eq	\frac{\texp{\log{\prob{\cD, \vtheta}}}}{\int \texp{\log{\prob{\cD, \vtheta}}} \text{d}\vtheta}
+		\end{align*}
+
+		Suppose $\log{\prob{\cD, \vtheta}} = f(\vtheta)$, then we can write using 2nd Order Taylor Expansion
+		\begin{align*}
+			f(\vtheta)	\qapprox	f(\vtheta_0) + \tr{(\vtheta - \vtheta_0)} \bigtriangledown f(\theta_0) + \frac{1}{2} \tr{(\vtheta - \vtheta_0)} \bigtriangledown^2 f(\vtheta_0) (\vtheta - \vtheta_0)
+		\end{align*}
+
+		Let us choose $\vtheta_0 = \vtheta_{\text{MAP}}$. Since $\vtheta_{\text{MAP}}$ is a maxima for the distribution $\prob{\cD, \vtheta}$, we can say $\bigtriangledown f(\vtheta_{\text{MAP}} = 0$. Therefore
+		\begin{align*}
+			\log{\prob{\cD, \vtheta}}	\qapprox	\frac{1}{2} \tr{(\vtheta - \vtheta_{\text{MAP}})} \bigtriangledown^2 \log{\prob{\cD, \vtheta_{\text{MAP}}}} (\vtheta - \vtheta_{\text{MAP}})
+		\end{align*}
+
+		Putting this back in the equation and simplifying, we get
+		\begin{align*}
+			\prob{\vtheta \pipe \cD}	\qapprox	\frac{\texp{\tr{(\vtheta - \vtheta_{\text{MAP}})} \para{- \bigtriangledown^2 \log{\prob{\cD, \vtheta_{\text{MAP}}}}} (\vtheta - \vtheta_{\text{MAP}})}}{\int \texp{\tr{(\vtheta - \vtheta_{\text{MAP}})} \para{- \bigtriangledown^2 \log{\prob{\cD, \vtheta_{\text{MAP}}}}} (\vtheta - \vtheta_{\text{MAP}})} \text{d}\vtheta}
+		\end{align*}
+
+		Hence, our approximation does yield a gaussian distribution. However, it is expensive to use Laplace Distribution if the number of parameters is very large, as we need to invert the Hessian matrix. Also, the approximation can be highly inaccurate if the distribution itself is multimodal.
+
+	\end{ssubsection}
+
+	We can now apply laplace approximation for the Logistic Regression case. Let us start by comp
+
+\end{ssection}<++>
+
+\end{document}

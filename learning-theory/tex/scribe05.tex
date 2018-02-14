@@ -12,7 +12,7 @@
 \begin{document}
 \makeheader%
 
-In order to understand pointwise and uniform convergence, let us consider the following problem. \br
+In order to understand pointwise and uniform convergence, let us consider the following problem.
 
 \begin{ssection}[1]{Problem Setting}
 
@@ -21,8 +21,8 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 	Since our hypothesis space is finite, we can, without loss of generality, say that $f^\ast = f_1$. Then,
 
 	\begin{enumerate}[label=(\roman*)]
-		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \ie have high(er) emperical risk or training error.
-		\item we do not want $f_1$ to perform poorly on $S$ \ie have low(er) emperical risk.
+		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \ie have high(er) empirical risk or training error.
+		\item we do not want $f_1$ to perform poorly on $S$ \ie have low(er) empirical risk.
 		\item we try to ensure all $f_i$ give faithful and honest performance on $S$ \ie $\qforall f \in \cH, \err[_D^l]{f} \approx \err[_S^l]{f}$
 	\end{enumerate}
 
@@ -34,7 +34,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
 	\end{align*} \sbr
 
-	We define this more formally in the Section \hyperlink{sec:2}{2}
+	We define this more formally in the Section \hyperlink{sec:2}{2} \br
 
 	\note{By good, we do not mean that the function should give a low error, instead, the function should give an error almost the same as it would give for the true distribution}
 
@@ -42,7 +42,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 
 \begin{ssection}[2]{Pointwise Convergence}
 
-	Before we look at the definition of pointwise convergence, we need to formally define when a training sample is considered to be good or representative of the true data distribution.
+	Before we look at the definition of pointwise convergence, we need to formally define when a training sample is considered to be good or representative of the true data distribution. \br
 
 	\begin{definition}[$\epsilon$-representative wrt\footnote{\ut{wrt} is an abbreviation for ``with respect to''} a function]
 		A training sample $S$ is said to be $\epsilon$-representative of a distribution $\cD$ with respect to a function $f$ and a loss function $l$ if
@@ -51,7 +51,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		\end{equation}
 	\end{definition}
 
-	We can now give the formal definition of pointwise convergence.
+	We can now give the formal definition of pointwise convergence. \br
 
 	\begin{definition}[Pointwise Convergence]
 		A hypothesis / function class $\cH = \set{f^1, f^2 \dots}$ is said to be in pointwise convergence if $\qforall f \in \cF$

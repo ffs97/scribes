@@ -1,0 +1,19 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{bm}
+
+\usetikzlibrary{bayesnet}
+
+\begin{document}
+
+	\tikz{
+		\node[obs]					(y) 	{$\bm{y}$};
+		\node[latent, above=of y]	(t1) 	{$\theta_1$};
+		\node[latent, above=of t1]	(t2) 	{$\theta_2$};
+
+		\edge {t2}	{t1};
+		\edge {t1}	{y};
+	}
+
+\end{document}
