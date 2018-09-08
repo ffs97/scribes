@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[11pt,a4paper]{article}
 
 \usepackage{scribe}
 
@@ -19,8 +19,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 	Consider a finite hypothesis class $\cH = \set{f^1, f^2 \dots f^m}$ and a distribution $\cD$. We need to find the best prediction function $f^\ast$ which minimizes the l-risk.
 
 	Since our hypothesis space is finite, we can, without loss of generality, say that $f^\ast = f_1$. Then,
-
-	\begin{enumerate}[label=(\roman*)]
+	\begin{enumerate}
 		\item we do not want $f_2, f_3 \dots f_m$ to perform well on $S$ \ie have high(er) empirical risk or training error.
 		\item we do not want $f_1$ to perform poorly on $S$ \ie have low(er) empirical risk.
 		\item we try to ensure all $f_i$ give faithful and honest performance on $S$ \ie $\qforall f \in \cH, \err[_D^l]{f} \approx \err[_S^l]{f}$
@@ -34,7 +33,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		\abs{\err[_D^l]{f} - \err[_S^l]{f}}	\qle	\epsilon
 	\end{align*} \sbr
 
-	We define this more formally in the Section \hyperlink{sec:2}{2} \br
+	We define this more formally in the Section \hyperlink{sec:2}{2}
 
 	\note{By good, we do not mean that the function should give a low error, instead, the function should give an error almost the same as it would give for the true distribution}
 
@@ -42,7 +41,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 
 \begin{ssection}[2]{Pointwise Convergence}
 
-	Before we look at the definition of pointwise convergence, we need to formally define when a training sample is considered to be good or representative of the true data distribution. \br
+	Before we look at the definition of pointwise convergence, we need to formally define when a training sample is considered to be good or representative of the true data distribution.
 
 	\begin{definition}[$\epsilon$-representative wrt\footnote{\ut{wrt} is an abbreviation for ``with respect to''} a function]
 		A training sample $S$ is said to be $\epsilon$-representative of a distribution $\cD$ with respect to a function $f$ and a loss function $l$ if
@@ -51,7 +50,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		\end{equation}
 	\end{definition}
 
-	We can now give the formal definition of pointwise convergence. \br
+	We can now give the formal definition of pointwise convergence.
 
 	\begin{definition}[Pointwise Convergence]
 		A hypothesis / function class $\cH = \set{f^1, f^2 \dots}$ is said to be in pointwise convergence if $\qforall f \in \cF$
@@ -91,7 +90,6 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 
 	\begin{exercise}
 		Prove Corollary \ref{cor:point_convergence}
-
 		\hint{Take a Bernoulli random variable and use Chernoff's Bound}
 	\end{exercise}
 
@@ -104,7 +102,7 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		Prove the above bound using the concepts of pointwise convergence
 	\end{exercise}
 
-	This is a much weaker bound, as the size of the hypothesis space is generally large (sometimes infinite, as we will see later). Therfore, pointwise convergence is a good property for individual functions, however, we want such a property to hold for all functions collectively. Hence, we define a much stronger convergence property, called uniform convergence, discussed in the next section. \br
+	This is a much weaker bound, as the size of the hypothesis space is generally large (sometimes infinite, as we will see later). Therfore, pointwise convergence is a good property for individual functions, however, we want such a property to hold for all functions collectively. Hence, we define a much stronger convergence property, called uniform convergence, discussed in the next section.
 
 \end{ssection}
 
@@ -165,13 +163,13 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 		\label{res:unif-pac}
 	\end{result}
 
-	Suppose we have a training sample $S$ for which the hypothesis class is in uniform convergence, then we also have PAC learnability for that hypothesis class. Hence, the problem discussed in Section \hyperlink{sec:1}{1} is solved with the ERM paradigm, without the fear of overfitting. \br
+	Suppose we have a training sample $S$ for which the hypothesis class is in uniform convergence, then we also have PAC learnability for that hypothesis class. Hence, the problem discussed in Section \hyperlink{sec:1}{1} is solved with the ERM paradigm, without the fear of overfitting.
 
 \end{ssection}
 
 \begin{ssection}[4]{Agnostic PAC learnibility for Finite Hypothesis Classes}
 
-	Similar to the method used in Scribe 3, we need to find a training sample size which allows for uniform convergence given $\epsilon > 0$ and $\delta \in (0, 1)$ in case of finite hypothesis classes. \br
+	Similar to the method used in Scribe 3, we need to find a training sample size which allows for uniform convergence given $\epsilon > 0$ and $\delta \in (0, 1)$ in case of finite hypothesis classes.
 
 	Suppose, for a hypothesis class $\cH$, we have a training sample $S$ of size $n$. Then for some $\epsilon > 0$ and $\delta \in (0, 1)$,
 	\begin{align*}
@@ -196,11 +194,18 @@ In order to understand pointwise and uniform convergence, let us consider the fo
 	\begin{theorem}[Hoeffding's Inequality]
 		Let $R$ have a sequence of $n$ i.i.d. random variables $\set{X^i}_{i \in \brac{n}}$ and assume that for all $i \in \brac{n}$, $\E{X^i} = \mu$ and $a \le X^i \le b$ a.s.\footnote{We say that an event $E$ happens almost surely (abbreviated as a.s.) if the probability of $E$ happening is 1}. Then, for any $\epsilon > 0$
 		\begin{equation}
-			\prob{\abs{\frac{1}{n} \sum_{i \in \brac{n}} X^i - \mu} > \epsilon}	\qle	2 \texp{\frac{-2\,n\,\epsilon^2}{(b - a)^2}}
+			\prob{\abs{\frac{1}{n} \sum_{i \in \brac{n}} X^i - \mu} > \epsilon}	\qle	2 \texp{-\frac{2\,n\,\epsilon^2}{(b - a)^2}}
 		\end{equation}
 	\end{theorem}
 
-	We do not give the proof of the above theorem here, but can be found \href{https://en.wikipedia.org/wiki/Hoeffding\%27s\_inequality\#Proof}{here} \br
+	\begin{remark}
+		The Hoeffding's Inequality can be proved using a lemma, known as the \et{Hoeffding's Lemma}, which states for any random variable $X \in \brac{a, b}$ a.s., such that $\E{X} = 0$, we have
+		\begin{equation}
+			\E{\exp{\lambda X}}	\qle	\texp{\frac{\lambda^2(b-a)^2}{8}}
+		\end{equation}
+	\end{remark}
+
+	We do not give the proof of the above theorem here, but can be found \href{https://en.wikipedia.org/wiki/Hoeffding\%27s\_inequality\#Proof}{here}
 
 	Assuming the range of the loss function $l$ is $\brac{0, 1}$, then using the Hoeffding's Inequality, we can complete the bound on the probability of a training sample $S$ not being $\epsilon$-representative and formulate the following result, the proof of which is left as an exercise
 

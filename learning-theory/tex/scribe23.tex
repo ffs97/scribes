@@ -1,0 +1,262 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Statistical and Algorithmic Learning Theory}
+\setscribecode{23}
+\setauthname{Gurpreet Singh}
+\setinstrname{Purushottam Kar}
+\setauthemail{guggu@iitk.ac.in}
+\settitle{Probabilistic Modelling - II}
+
+\begin{document}
+\makeheader
+
+\begin{ssection}{Recap}
+
+	In the last lecture, we introduced probabilistic modeling and discussed the EM Algorithm as an example of the Minorization Maximization technique.
+
+	In this lecture, we will add to the discussion of the EM algorithm, and extend our discussion to more Probabilistic Models and techniques, specifically Markov Chain Monte Carlo methods.
+
+\end{ssection}
+
+\begin{ssection}{The EM Algorithm}
+
+	As was discussed in the last lecture, the EM algorithm is effectively a Minorization Maximization technique. For the sake of completeness, we present the Minorization Maximization technique in Algorithm \hyperlink{algo:1}{1}
+
+	\begin{algo}[0.9\textwidth]{Minorization Maximization}
+
+		\begin{align*}
+			g^{t +1}	&\qlla	\tfunc{MIN}{f, \vtheta^{(t)}} \\
+			\vtheta^{(t + 1)}	&\qlla	\argmax{\vtheta\,\in\,\Theta}\ \func{g^{(t + 1)}}{\vtheta}
+		\end{align*}
+		where the function $g$ is a Minorization of a function $f$ with respect to a point $\vtheta_o$ if the following conditions hold
+		\begin{enumerate}[label=\bt{\theenumi.}]
+			\item $g(\vtheta_o) = f(\vtheta_o)$
+			\item $\qforall \vtheta \in \Theta$, $g(\vtheta) \le f(\vtheta)$
+			\item $g(.)$ should be easy to minimize
+		\end{enumerate}
+
+	\end{algo}
+
+	In order to show that the EM algorithm is in fact a Minorization Maximization, we need to derive a well defined function $g$ such that it satisfies the stated conditions.
+
+	The EM objective can be stated as finding the values of the parameters $\vtheta$ such that
+	\begin{align*}
+		\vtheta^{\ast} \eq \argmax{\vtheta\,\in\,\Theta} \prob{\vX \pipe \vtheta}
+	\end{align*}
+
+	Therefore, our function $f$ is given by $f(\vtheta) = \prob{\vX \pipe \vtheta}$. We now move on to find a suitable function $g$ such that the $g$ is a minorization of the function $f$. Firstly, using rules of probability, we have
+	\begin{align*}
+		\logp{\prob{\vX \pipe \vtheta}} &\eq \log{\sum_{\vZ\,\in\,\cZ} \prob{\vX, \vZ \pipe \vtheta}} \\
+		&\eq \log{\sum_{\vZ \in \cZ} \prob{\vZ \pipe \vX, \vtheta^{(t)}} \frac{\prob{\vX, \vZ \pipe \vtheta}}{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}} \\
+		&\eq \log{\E[\vZ \pipe \vX, \vtheta^{(t)}]{\frac{\prob{\vX, \vZ \pipe \vtheta}}{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}}}
+	\end{align*}
+
+	Now since log is a concave function, we can use Jensen's Inequality to say
+	\begin{align*}
+		\prob{\vX \pipe \vtheta} &\qge \E[\vZ \pipe \vX, \vtheta^{(t)}]{\log{\frac{\prob{\vX, \vZ \pipe \vtheta}}{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}}} \\
+		&\eq \E[\vZ \pipe \vX, \vtheta^{(t)}]{\logp{\prob{\vX, \vZ \pipe \vtheta}} - \logp{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}} \\
+	\end{align*}
+
+	Also, one can see that the equality is met if $\vtheta = \vtheta^{(t)}$. Hence, this satisfies the first two conditions we stated for the function $g$. Also, for many classes of models we can compute the Complete Data Likelihood $\para{\prob{\vX, \vZ \pipe \vtheta}}$ as well as the posterior over the latent variables, and it is usually easy to minimize the above function, however, many times, this step itself needs to be approximated. Hence, we have the function $g$ which is stated as below
+	\begin{align*}
+		g(\vtheta) \eq \E[\vZ \pipe \vX, \vtheta^{(t)}]{\logp{\prob{\vX, \vZ \pipe \vtheta}} - \logp{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}}
+	\end{align*}
+
+	Using this, we can formulate the EM algorithm in terms of the Minorization Maximization technique. For completeness' sake, we state the final algorithm in Algorithm \hyperlink{algo:2}{2}
+
+	\begin{algo}[0.9\textwidth]{The EM Algorithm}
+		\begin{enumerate}
+			\item Initialize $\vtheta$ as $\vtheta^0$
+			\item For $t = 1, 2 \dots$
+				\begin{align*}
+					g^{t + 1}(\vtheta)	&\qlla	\E[\vZ \pipe \vX, \vtheta^{(t)}]{\logp{\prob{\vX, \vZ \pipe \vtheta}} - \logp{\prob{\vZ \pipe \vX, \vtheta^{(t)}}}} \\
+					\vtheta^{t + 1}		&\qlla	\argmax{\vtheta\,\in\,\Theta}\ \func{g^{t + 1}}{\vtheta}
+				\end{align*}
+		\end{enumerate}
+	\end{algo}
+
+	\begin{ssubsection}{Gradient Ascent Expectation Maximization}
+
+		Many times, the maximization step itself might require gradient ascent methods to maximize the objective function $g^{t + 1}$, therefore, it sometimes makes more sense to take only one step in the direction of the gradient, and recompute the objective in each iteration. More formally, the maximization step in Algorithm \hyperlink{algo:2}{2} can be replaced by the following computation.
+		\begin{align*}
+			\vtheta^{t + 1} \qlla \vtheta^{(t)} + \eta_t \cdot \nabla_{\vtheta} g^{t + 1}(\vtheta^{(t)})
+		\end{align*}
+		The algorithm thus obtained is known as the Gradient Descent EM Algorithm.
+
+	\end{ssubsection}
+
+	\begin{ssubsection}{Stochastic Gradient Ascent Expectation Maximization}
+
+		Computing the gradient with respect to even one point, $\vtheta^{(t)}$ can be expensive if the number of data points, represented by $\vX$, is very large. Therefore, we can instead perform one iteration of the algorithm using only one data point, or using a small subset of data-points. The algorithm thus obtained is given in Algorithm \hyperlink{algo:3}{3}
+
+		\begin{algo}[0.9\textwidth]{The EM Algorithm}
+		\begin{enumerate}
+			\item Initialize $\vtheta$ as $\vtheta^0$
+			\item For $t = 1, 2 \dots$
+				\begin{align*}
+					\sI_t					&\qsim	\brac{n}, \ \mt{uniform and i.i.d.} \\
+					g^{t + 1}(\vtheta)	&\qlla	\tfunc{MIN}{\logp{\sum_{\vZ\,\in\,\cZ} \prob{\vx^{\sI_t}, \vZ \pipe \vtheta}}, \vtheta^{(t)}} \\
+					\vtheta^{t + 1}		&\qlla	\vtheta^{(t)} + \eta_t \cdot \nabla_{\vtheta} \func{g^{t + 1}}{\vtheta^t}
+				\end{align*}
+		\end{enumerate}
+		\end{algo}
+
+	\end{ssubsection}
+
+\end{ssection}
+
+Expectation Minimization suffers from the same problems as MLE or MAP estimates, we are only trusting one model. That is, we are computing only one value of the parameters $\vtheta$, and therefore there is no uncertainty modeled with respect to the parameters.
+
+The solution to this problem is to model the uncertainty in the parameters using the posterior of the parameters with respect to the data points $\vX$, \ie weight or trust the values of the parameters with their posterior values, given by $\prob{\vtheta \pipe \vX}$
+
+It is possible to compute the Bayesian Predictive Posterior with the posterior, \ie $\prob{\vtheta \pipe \vX}$ known, instead of the plug-in-posterior. The Bayesian Predictive Posterior is computed as follows
+\begin{align*}
+	\prob{\vx^{\ast} \pipe \vX} \eq \int_\vtheta \prob{\vx^{\ast} \pipe \vtheta} \prob{\vtheta \pipe \vX} \id \vtheta
+\end{align*}
+
+Without knowing the posterior, we can only find the plug-in-posterior, which is given as
+\begin{align*}
+	\prob{\vx^{\ast} \pipe \vX} &\eq \int_{\vtheta} \prob{\vx^{\ast} \pipe \vtheta} \delta_{\vtheta^{\ast}}(\vtheta) \id \vtheta
+	&\eq \prob{\vx^{\ast} \pipe \vtheta^{\ast}}
+\end{align*}
+where $\vtheta^{\ast}$ is a point estimate (usually MLE or MAP estimate) for the parameters.
+
+The Bayesian Predictive Posterior is a useful quantity, however can be only exactly computed in case there is conjugacy in the model, and the introduction of latent variables again complicate the computations, and usually render the model to be intractable (with the exception of probabilistic PCA for dimensionality reduction). Even without latent variables, if the model does not exhibit conjugacy, computing the posterior becomes intractable.
+
+It should be clear to the reader that we cannot use the EM algorithm to compute the posterior distribution, even approximately, in such cases. Therefore, we need more stronger and general models to achieve our goals. We will state some of the methods in the next section.
+
+\begin{ssection}{Approximating Disrtibutions}
+
+	As previously discussed, our goal is to approximate distributions which are, otherwise, intractable, or hard to compute. There are essentially two classes of techniques to tackle this problem.
+
+	\begin{enumerate}[label=\bt{\theenumi.}]
+		\ditem[Parametric Techniques]
+
+			Parametric techniques includes those techniques which approximate the objective distribution $\prob{\vtheta \pipe \vX}$ using a ``nice'' distribution $q(\vtheta)$. The $q \in \cQ$ distribution is known as the proposal distribution.
+
+			In order to compute the predictive posterior, we can use Monte Carlo Principle, which is stated in the following theorem.
+			\begin{theorem}[Monte Carlo Principle]
+				If we draw a set of samples $\cS = \set{\vtheta^{(i)}}_{i = 1}^n$ from a target density distribution $p(\vtheta)$ defined on $\Theta$, then for a large enough sample set, we can approximate the density as
+				\begin{align*}
+					p(\vtheta) \qapprox \frac{1}{n} \sum_{i = 1}^n \delta_{\vtheta^{(i)}}(\vtheta)
+				\end{align*}
+			\end{theorem}
+
+			The predictive posterior can now be approximated using the Monte Carlo method as follows
+			\begin{align*}
+				\prob{\vx^{\ast} \pipe \vX} \qapprox \frac{1}{\abs{\cS}} \sum_{\vtheta\,\in\,\cS} \prob{\vx^{\ast} \pipe \vtheta}
+			\end{align*}
+			where $\cS \sim q^{\abs{\cS}}$
+
+			Examples of Parametric Techniques incldues Laplace Approximation, which approximates the posterior distribution with a Gaussian Distribution with the mean as the MAP estimate and the Covariance Matrix as the Hessian of the log posterior.
+
+			Some other examples include Variational Bayes where we assume the hypothesis class of the proposal distribution.
+
+			The reader might be wondering if we can directly approximate the distribution $\prob{\vx^{\ast} \pipe \vX}$. Indeed, we can, however most models have data point dependent predictive posterior. In formal terms, most models are of the form where the data point is composed of two parts, and we wish to model only one part, for example, linear regression, where each data point is the tuple $\para{y, \vx}$. In this case, we model only $\vy$ keeping $\vX$ constant, and in such models, the predictive posterior takes the form $\prob{y^{\ast} \pipe \vx^{\ast}, \vy, \vX}$. In such cases, we would require to approximate the predictive posterior for every data point separately, which makes the approach infeasible.
+
+			\ditem[Non-Parametric Techniques]
+
+			We never require the posterior of a model directly, but only to compute quantities such as the predictive posterior. Therefore, if it is possible to only get samples from the posterior, and not the complete posterior itself, we can approximate the predictive posterior using the Monte Carlo method as seen earlier.
+
+			This is the key idea behind non-parametric techniques, which do not assume anythuing about the objective distribution, but samples from it using various techniques, Some of the common methods that lie in this category are Markov Chain Monte Carlo (MCMC) method, Metropolis Hastings (MH) sampling, Hamiltonian Markov Chain (HMC) and Stochastic Gradient Langevin Dynamics (SGLD).
+
+			As discussed, the goal for non-parametric techniques is to sample from an distribution $p(\vtheta) = \prob{\vtheta \pipe \vX}$. We assume that we can compute the value of $p(\vtheta)$ up to a proportionality constant, which is otherwise unknown. More formally, we assume
+			\begin{align*}
+				p(\vtheta) \qprop \texp{- f(\vtheta)}
+			\end{align*}
+			and $f(\vtheta)$ is easy to compute or approximate.
+
+			This assumption holds in most of the models, where only the denominator of the posterior, which is just a proportionality constant is intractable, but we can easilty compute the numerator.
+
+			We will discuss more about the MCMC method in the next section and later look at how these methods can sample from an unknown distribution.
+
+	\end{enumerate}
+
+\end{ssection}
+
+\begin{ssection}{Markov Chain Monte Carlo Method}
+
+	For the sake of simplicity, we assume that the hyopthesis set $\Theta$ is finite and discrete for the following discussion, although the results we see hold for the non-finite and continuous cases as well. We represent the possible states as $\set{\vtheta_j}_{j = 1}^m$
+
+	The distribution over the parameters $\vtheta \in \Theta$ will be a probability vector, say $\vpi^{\ast}$. This is our objective distribution which, in practice, we aim to compute or approximate. The intuitive idea is to start with a base distriubution, say $\vpi^0$ and subsequently sample, in a way, from this distribution hoping that the generated samples actually belong to the objective distribution. This is the base idea of the MCMC methods, which is discussed in more detail in this lecture and the subsequent one.
+
+	Since we are sampling $\theta$ sequentially, we refer to each sample as a state. Also, for a sequence of samples or states, there is a probability distribution which corresponds to the probability for choosing the next state.
+
+	MCMC methods rely on a simple assumption, that the probability of choosing a state conditioned on all the previous states is independent of all the states, but only the previous one. More formally, if the sequence of states that we have sampled are given as $\set{\vtheta^{(1)}, \vtheta^{(2)} \dots \vtheta^{(t - 1)}}$, and the current state (to be sampled) is given as $\vtheta^{(t)}$, then we say
+	\begin{equation}
+		\prob{\vtheta^{(t)} \pipe \vtheta^{(1)}, \vtheta^{(2)} \dots \vtheta^{(t - 1)}} \eq \prob{\vtheta^{(t)} \vpipe \vtheta^{(t - 1)}}
+		\label{eq:mc-rule}
+	\end{equation}
+
+	Suppose if there are $m$ states, then we can write a transition matrix $\sP \in \bR_+^{m \times m}$ such that $\sP_{i, j} = \prob{\vtheta_j \vpipe \vtheta_i}$.
+
+	Therefore, using the Markov Chain rule in equation \ref{eq:mc-rule}, we can say that the probability of transition to a state $\vtheta_j$ from a state $\vtheta_i$, represented as $\prob{i \ra j}$ is given by $\sP_{i, j}$ and the probability distribution over the next state is given by $\sP_{i, :}$. We can now give the sampling algorithm if we know the transition matrix as given in Algorithm \hyperlink{algo:4}{4}.
+
+	The sampling strategy for MCMC methods first sample the first state using the probability vector $\vpi^{(0)}$. When we say sample from a probability vector, we say that the distribution is a dirac delta distribution and the support points are the states $\set{1 \dots m}$, where each state corresponds to a parameter value. Suppose state $i$ corresponds to $\vtheta_i$, then we sample the parameters from the probability vector $\vpi$ as
+	\begin{align*}
+		\vtheta^{\ast} \qsim \sum_{j = 1}^m \pi_j \cdot \dirac{\vtheta_j}{\vtheta}
+	\end{align*}
+
+	Suppose if the current state of the Markov chain is $i$, then the sampling distribution for the next state can be given by the $i^{\text{th}}$ row of the transition matrix $\sP$, \ie $\sP_{i, :}$. Also, the sampling distribution for the first state is given by our initial or proposal distribution $\vpi^{(0)}$.
+
+	\begin{algo}[0.9\textwidth]{MCMC Sampling Strategy}
+
+		\begin{enumerate}
+			\item Sample the first state as $\vtheta^{(0)} \sim \sum_{j = 1}^m \pi_j^0 \cdot \delta_{\,\vtheta_j}(\vtheta)$
+			\item For $t = 1, 2 \dots T$
+
+				\begin{addmargin}{1em}
+					Sample state $\vtheta^{(t + 1)}$ using the probability vector given by $\sP_{s^{(t)},\::}$
+				\end{addmargin}
+			\item Return the set of samples $\set{\vtheta^{(t)}}_{t = 1}^T$
+		\end{enumerate}
+
+	\end{algo}
+
+	Let us calculate the probability of the $t^{\text{th}}$ sample correspond to a particular state or parameter. The probability of the first (initial) state being the state $i$ is equal to $\pi^{(0)}_i$. Speaking more generally, the probability distribution for the first sample is given by $\vpi^{(0)}$.
+
+	Now suppose if the probability distribution for the $t^{\text{th}}$ sample is given by $\vpi^{(t)}$, then we are interested in the probality distribution of the next sample. Using rules of probability, we can write this as
+	\begin{align*}
+		\prob{\vtheta^{(t + 1)} = \vtheta_j} &\eq \sum_{i = 1}^m \prob{\vtheta^{(t)} = \vtheta_i} \cdot \prob{\vtheta^{(t + 1)} = \vtheta_j \pipe \vtheta^{(t)} = \vtheta_i} \\
+		&\eq \sum_{i = 1}^m \pi_i^{(t)} \cdot \sP_{i,\:j} \\
+		&\eq \vpi^{(t)} \sP_{:,\:j}
+	\end{align*}
+
+	Therefore the probability distribution $\vpi^{(t + 1)}$ is given by $\vpi^{(t)} \cdot \sP$. Hence, using induction, we have
+	\begin{align*}
+		\vpi^{(t)} \eq \vpi^{(0)} \cdot \sP^t
+	\end{align*}
+
+	Therefore, we can say that if $\vpi^{(t)}$ converges to $\vpi^{\ast}$, the objective distribution, then the sample that is obtained at the end of each chain (when the chain converges) will in fact be a sample from the objective distribution. However that would be make the process extremely slow. Instead, once the chain has converged, we know that the subsequent samples (if we continue sampling) will all be effectively sampled from $\vpi^{\ast}$. Hence, the sampling strategy given in Algorithm \hyperlink{algo:4}{4} can be used, if we start collecting the samples after the chain converges. That is, the return set can now be written as $\set{\vtheta^{(t)}}_{t = T^+}^{T}$ for some large $T^+$.
+
+	We will now state some properties of the transition matrix $\sP$ which will help us to prove that any choice of our initial distribution (given certain conditions, mentioned later) will converge to the optimal distribution, \ie $\vpi^{\ast}$. More specifically, we state properties of a right stochastic matrix (defined below).
+
+	\begin{definition}[Right Stochastic Matrix]
+		A Right Stochastic Matrix is a square matrix with real non-negative entries and each row summing to one. \ie a matrix $\sT \in \bR_+^{n \times n}$ is right stochastic iff
+		\begin{align*}
+			\sT \mathbbm{1}_n \eq \mathbbm{1}_n
+		\end{align*}
+		where $\mathbbm{1}_n$ denotes a $n$-dimensional vector of ones.
+	\end{definition}
+
+	Since $\sP$ satisfies the contrainsts of a right stochastic matrix, all the properties of a right stochastic matrix are applicable on $\sP$. We state some of these properties below.
+
+	\begin{enumerate}
+		\item If $\sP$ is right-stochastic, then $\qforall k \in \bN$, $\sP^k$ is right stochastic
+		\item The largest eigen-value of $\sP$ is equal to one
+			\begin{proof}
+				Since each row of the matrix $\sP$ denotes a probability vector, and therefore, each element of the vector $\sP \vv$ for some $\vv \in \bR^n$ is a normalized weighted combination of the dimensions of $\vv$. Therefore, each element of $\sP \vv$ is lesser than the maximum dimension value of $\vv$, more formally, $\norm{\sP \vv}_{\infty} \le \norm{\vv}_{\infty}$. This suggests that there can be no value of $\lambda > 1$ such that $\sP \vv = \lambda \vv$. Also, from the properties of $\sP$, we have $\sP \mathbbm{1}_n = \mathbbm{1}_n$, therefore there exists an eigen-vector for which the eigen value of $\sP$ is equal to one.
+			\end{proof}
+		\item $\qexists \vv \in \bR^n$ such that $\tr{\vv} \sP = \tr{\vv}$
+	\end{enumerate}
+
+	In the next lecture, we will see some more properties of the transition matrix, and show the proof of convergence, \ie for any initial distribution, given $\sP$, we always converge to $\vpi^{\ast}$ following the sampling strategy given in Algorithm \hyperlink{algo:4}{4}.
+
+\end{ssection}
+
+\bibliography{scribes}
+\bibliographystyle{plainnat}
+
+\end{document}

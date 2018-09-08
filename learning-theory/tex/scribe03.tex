@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[11pt,a4paper]{article}
 
 \usepackage{scribe}
 
@@ -12,7 +12,7 @@
 \begin{document}
 \makeheader%
 
-Before we attempt to solve a machine learning problem, we must accurately define the model or setting. Hence, we first define a formal model aimed to cover learning tasks. \br
+Before we attempt to solve a machine learning problem, we must accurately define the model or setting. Hence, we first define a formal model aimed to cover learning tasks.
 
 We only cover parametric learning models \et{e.g.} Binary Classification, Regression, etc in this chapter and following ones
 
@@ -81,9 +81,9 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 
 \begin{ssection}{Empirical Risk Minimization}
 
-	We need to have a learning algorithm to reduce the l-risk / true error on the distribution. However, as discussed earlier, we can only see the training sample $S$, and hence we have no direct way to minimize error on the true distribution (given some loss function) \et{i.e.} $\err[_D^l]{l}$. \br
+	We need to have a learning algorithm to reduce the l-risk / true error on the distribution. However, as discussed earlier, we can only see the training sample $S$, and hence we have no direct way to minimize error on the true distribution (given some loss function) \et{i.e.} $\err[_D^l]{l}$.
 
-	To tackle this, we try to minimize the empirical error or empirical risk. The intuition behind this is the assumption / expectation that the training sample is a snapshot of the true data distribution and it explains the universe well. \br
+	To tackle this, we try to minimize the empirical error or empirical risk. The intuition behind this is the assumption / expectation that the training sample is a snapshot of the true data distribution and it explains the universe well.
 
 	Hence, our learning algorithm gives us a prediction rule $\hat{f} \in \cH$ which is the estimate of the true $f^\ast$ where
 	\begin{align*}
@@ -91,11 +91,11 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 		f^\ast \qapprox f_{ERM}	&\eq	\argmin{f \in \cH} \err[_S^l]{f}
 	\end{align*}
 
-	Although we have a nice prediction rule which allows us to learn our sample training, and is expected to be a good predictor for the complete data / universe as well. However, the ERM predictor may highly overfit the sample training data. \br
+	Although we have a nice prediction rule which allows us to learn our sample training, and is expected to be a good predictor for the complete data / universe as well. However, the ERM predictor may highly overfit the sample training data.
 
 	\begin{ssubsection}{Overfitting of Training Sample}
 
-		To understand what overfitting is, let us take a simple binary classification example. \br
+		To understand what overfitting is, let us take a simple binary classification example.
 
 		\begin{figure}[h!]
 			\centering
@@ -104,13 +104,13 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 			\label{fig:overfitting}
 		\end{figure}
 
-		Suppose we have some data points (universe) sampled randomly within a box, as shown in Figure \ref{fig:overfitting}. Also, for some $S$, the sampled data points for the training sample are the points within the gray box. \br
+		Suppose we have some data points (universe) sampled randomly within a box, as shown in Figure \ref{fig:overfitting}. Also, for some $S$, the sampled data points for the training sample are the points within the gray box.
 
-		Therefore, we can write a prediction rule which always labels the data point as 1. Since this gives training error as 0 \et{i.e.} $\err[_S^l]{f} = 0$. However, the same prediction rule gives high error when run on the complete data. \br
+		Therefore, we can write a prediction rule which always labels the data point as 1. Since this gives training error as 0 \et{i.e.} $\err[_S^l]{f} = 0$. However, the same prediction rule gives high error when run on the complete data.
 
 		Therefore, a predictor that performs ``too well'' on a training sample, whereas gives a high error on the complete data is said to \et{overfit} the data. We can also write the formal definition of overfitting.
 
-		\begin{definition}[Overfitting \cite{oxford-overfitting}]
+		\begin{definition}[Overfitting \citep{oxford-overfitting}]
 			The production of an analysis which corresponds too closely or exactly to a particular set of data, and may therefore fail to fit additional data or predict future observations reliably.
 		\end{definition}
 
@@ -118,9 +118,9 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 
 	\begin{ssubsection}{Empirical Risk Minimization with Inductive Bias}
 
-		We know that the ERM method might lead to overfitting. In order to avoid that, we need to understand the reason behind it. \br
+		We know that the ERM method might lead to overfitting. In order to avoid that, we need to understand the reason behind it.
 
-		The overfitting problem is caused by the learner fitting a function to accurately predict the labels for all the data points in the training sample. Hence, rather than predicting the general pattern in the data. \br
+		The overfitting problem is caused by the learner fitting a function to accurately predict the labels for all the data points in the training sample. Hence, rather than predicting the general pattern in the data.
 
 		A simple solution to this is to restrict the search space of the prediction function. Hence, instead of minimizing the empirical risk over all functions, we will look at only a set of possible functions. This set is called the \et{hypothesis class} or the \et{model class} (or \et{hypothesis space}). We can formally define this as below.
 
@@ -139,9 +139,9 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 
 	\begin{ssubsection}{Avoiding Overfitting with Finite Hypothesis Spaces}
 
-		We claimed in the previous section that we can avoid overfitting if we use Hypothesis space. However, overfitting is highly probably avoided in case of finite hypothesis spaces. More formally, if the hypothesis space $\cH$ is a finite class of size $m$, where $m$ is \et{sufficiently large}, then the risk of the predictor function is bounded with a high probability. \br
+		We claimed in the previous section that we can avoid overfitting if we use Hypothesis space. However, overfitting is highly probably avoided in case of finite hypothesis spaces. More formally, if the hypothesis space $\cH$ is a finite class of size $m$, where $m$ is \et{sufficiently large}, then the risk of the predictor function is bounded with a high probability.
 
-		\note{We will prove this for the realizable setting, however this also holds for the agnostic setting as well, but only the bounds will change by a constant term, as we will see later.} \br
+		\note{We will prove this for the realizable setting, however this also holds for the agnostic setting as well, but only the bounds will change by a constant term, as we will see later.}
 
 		We still need to define when is $m$ ``sufficiently large'', however, first we need to take some generic assumptions for our model.
 
@@ -150,7 +150,7 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 			\ditem[The Realizability Assumption.] The realizability assumption states that there exists $f^\ast \in \cH$ such that $\err[_D^l]{f^\ast} = 0$. This assumption says that the with probability 1 over any random sample, $S$, $\err[_S^l]{f^\ast}$
 		\end{enumerate}
 
-		Since $S$ is sampled using the data distribution, $\cD$, we can say that $S$ and therefore $\err[_S^l]{f}$ are random variables for some $f \in \cH$. We say an algorithm for a learning model is very less likely to overfit if the l-risk for all functions learned by the algorithm for any sample is bounded by $\epsilon$ with probability more than $1 - \delta$ where $\epsilon$ is the accuracy parameter and $\delta$ is the confidence parameter. \br
+		Since $S$ is sampled using the data distribution, $\cD$, we can say that $S$ and therefore $\err[_S^l]{f}$ are random variables for some $f \in \cH$. We say an algorithm for a learning model is very less likely to overfit if the l-risk for all functions learned by the algorithm for any sample is bounded by $\epsilon$ with probability more than $1 - \delta$ where $\epsilon$ is the accuracy parameter and $\delta$ is the confidence parameter.
 
 		Therefore, we need to bound $\prob{\err[_D^l]{f_S} > \epsilon}$. Since this is just dependent on $S$, we can write this in an alternate way
 		\begin{align*}
@@ -194,7 +194,7 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 			\func{\cD^m}{\set{S \pipe \err[_D^l]{f_S} > \epsilon}}	\qle	\abs{\cH_B} \exp{-\epsilon n}	\qle	\abs{\cH} \exp{-\epsilon n}
 		\end{align*} \sbr
 
-		We can now define the bound on the size of the training sample $S$ \br
+		We can now define the bound on the size of the training sample $S$
 
 		\begin{theorem}
 			For some finite hypothesis class, $\cH$, let $\delta, \epsilon \in \para{0, 1}$ and let $m$ be an integer that satisfies
@@ -208,18 +208,7 @@ We only cover parametric learning models \et{e.g.} Binary Classification, Regres
 
 \end{ssection}
 
-\begin{thebibliography}{10}
-
-	\bibitem{oxford-overfitting}
-		Oxford Dictionaries
-		\et{The definition of overfitting}. \\
-		\href{https://en.oxforddictionaries.com/definition/overfitting}{\tt{https://en.oxforddictionaries.com/definition/overfitting}}
-
-	\bibitem{ml-tta}
-		Shai Shalev-Shwartz, Shai Ben-David
-		\et{Understanding Machine Learning from Theory to Algorithms}. \\
-		\href{http://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning}{http://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning}
-
-\end{thebibliography}
+\bibliography{scribes}
+\bibliographystyle{plainnat}
 
 \end{document}
