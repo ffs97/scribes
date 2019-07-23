@@ -1,0 +1,153 @@
+\documentclass{article}
+
+\usepackage{scribe}
+
+\setseriestitle{Introduction to Reinforcercment Learning}
+\setscribecode{2}
+\setauthname{Gurpreet Singh}
+\setinstrname{David Silver}
+\setauthemail{guggu@iitk.ac.in}
+\settitle{Markov Decision Processes}
+
+\begin{document}
+\makeheader
+
+\begin{ssection}{Introduction}
+
+	Markov Decision Processes (MDPs) formally describe an environment in a
+	reinforcement learning problem. We assume the environment to be fully
+	observable \ie the current state completely characterizes the environement.
+	Although most RL problems are fully observable, it is also possible to
+	convert partially observable problems to MDPs. A special case of MDPs with
+	one state are bandits.
+
+\end{ssection}
+
+\begin{ssection}{Markov Process}
+
+	A \et{Markov Process} is a memoryless random process \ie a sequence of
+	random states $S_1, S_2 \dots$ which satisfy the Markov Property. The
+	markov property is defined as follows.
+
+	\begin{definition}
+		\label{def:markov-property}
+		A state $S_t$ is Markov if and only if
+		\begin{align*}
+			\prob{S_{t + 1} \pipe S_1, S_2 \dots S_t} \eq \prob{S_{t + 1} \pipe S_t}
+		\end{align*}
+	\end{definition}
+	Another component of the markov process is the \et{state transition
+	probability matrix}. This is the transition matrix which defines the
+	probability of transition from one state to another. Suppose if we
+	represent this transition matrix using $\cP$, then $\cP_{S, \xS} =
+	\prob{S_{t + 1} = \xS \pipe S_t = S}$.
+
+	We can now formally define a Markov Process as follows
+	\begin{definition}
+		\label{def:markov-process}
+		A \et{Markov Process} (or \et{Markov Chain}) is a tuple $(\cS, \cP)$
+		where $\cS$ is a (finite) set of states and $\cP$ is the state
+		transition probability matrix.
+	\end{definition}
+
+\end{ssection}
+
+\begin{ssection}{Markov Reward Processes}
+
+	We extend this definition to Markov Reward Processes (MRPs). This is essentially a
+	Markov Chain with additional values defined with each state.
+	\begin{definition}
+		\label{def:markov-reward-process}
+		A \et{Markov Reward Process} is a tuple $\para{\cS, \cP, \cR, \gamma}$
+		where $\cS$ and $\cP$ are the same as in a Markov Process, $\cR(s) =
+		\E{R_{t + 1} \pipe S_t = s}$ is the \et{reward function}, and $\gamma
+		\in \para{0, 1}$ is the discount factor.
+	\end{definition}
+
+	The total reward is then defined as the sum of rewards obtained at all data
+	points. We define another quantity known as the discounted reward from
+	time-step $t$.
+	\begin{definition}
+		\label{def:return}
+		The \et{return} $G_t$ is the \et{total discounted reward} from time-step
+		$t$, where $G_t$ is defined as follows
+		\begin{align*}
+			G_t \eq R_{t + 1} + \gamma R_{t + 2} + \gamma^2 R_{t + 3} + \dots
+		\end{align*}
+	\end{definition}
+	The goal of an RL problem is to maximize the \et{return}.
+
+	\bt{Why Discount?} One reason to use the discount factor is to model the
+	higher uncertainty of inference in the farther future. The simpler and the
+	main reason is that using discount rewards is mathematicallo more
+	convenient. This also avoids infinite returns in cyclic Markov Processes.
+	Moreover, animals and humans show more preference for immediate reward,
+	therefore using discount rewards is cognitively justified.
+
+	\begin{definition}
+		\label{def:value-function}
+		The \et{state value function} $v(s)$ of an MRP is the the expected
+		return starting from state $s$.
+		\begin{align*}
+			v(s) \eq \E{G_t \pipe S_t = s}
+		\end{align*}
+	\end{definition}
+
+	\note{The return $G_t$ is a random variable, and the value function is a
+	scalar as defined in definition \ref{def:value-function}}
+
+	\begin{ssubsection}{The Bellman Equation}
+
+		We can write the value function using dynamic programming by rewriting
+		the equation given in definition \ref{def:value-function} as follows
+		\begin{align*}
+			v(s) &\eq \E{G_t \pipe S_t = s} \\
+			&\eq \E[S_{t + 1},S_{t + 2},\dots]{R_{t + 1} + \gamma \para{R_{t + 2} + \gamma R_{t + 3} + \dots} \pipe S_t = s} \\
+			&\eq \E[S_{t + 1}]{R_{t + 1} + \gamma v(S_{t + 1}) \pipe S_t = s}
+		\end{align*}
+
+		We can represent this more concisely in matrix form. Consider $\vv =
+		\trans{\brac{v(1), v(2) \dots v(n)}}$, $\boldsymbol{\cR} =
+		\trans{\brac{\cR(1), \cR(2) \dots \cR(n)}}$ and $\cP$ is the transition
+		matrix.
+		\begin{align*}
+			\vv \eq \boldsymbol{\cR} + \gamma \cP \vv
+		\end{align*}
+		Therefore, we can solve this as
+		\begin{align*}
+			\vv \eq (1 - \gamma \cP)^{-1} \boldsymbol{\cR}
+		\end{align*}
+
+		This is not always practically possible since the inversion of a matrix is $\bigO{n^3}$ where $n$ is the number of states. In order to tackle this, we use three different methods
+		\begin{itemize}
+			\item Dynamic Programming
+			\item Monte-Carlo Evaluation
+			\item Temporal-Difference Learning
+		\end{itemize}
+	\end{ssubsection}
+
+\end{ssection}
+
+\begin{ssection}{Markov Decision Process}
+
+	We extend the MRP to include actions or decisions. It is an environment in which all states follow the Markov property. In this case, we say that the transition probability matrix depends on the action taken.
+
+	\begin{definition}[Markov Decision Process]
+		A \et{Markov Decision Process} is a tuple $\para{\cS, \cP, \cA, \cR, \gamma}$ where $\cA$ is a finite set of actions and the transition matrix is given as $\cP^{a}_{s, \xs} = \prob{S_{t + 1} = \xs \pipe S_t = s, A_t = a}$
+		\label{def:markov-decision-process}
+	\end{definition}
+
+	The behaviour of agents is decided by policies. These are formally defined as below.
+	\begin{definition}[Policy]
+		A \et{policy} $\pi$ is a distribution over actions given states,
+		\begin{align*}
+			\pi(a \pipe s) \eq \prob{A_t = a \pipe S_t = s}
+		\end{align*}
+		\label{def:policy}
+	\end{definition}
+
+	We do not use deterministic policies instead of stochastic policies to allow exploration. Also, note that the policy depends only on the current state and not the time-step.
+
+\end{ssection}<++>
+
+\end{document}
